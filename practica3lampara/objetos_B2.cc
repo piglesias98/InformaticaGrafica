@@ -407,10 +407,22 @@ _pantalla::_pantalla()
 // perfil para un cilindro
 vector<_vertex3f> perfil;
 _vertex3f aux;
+//perfil exterior
 aux.x=0.4;aux.y=0.0;aux.z=0.0;
+perfil.push_back(aux);
+aux.x=0.5;aux.y=0.5;aux.z=0.0;
 perfil.push_back(aux);
 aux.x=0.8;aux.y=1.0;aux.z=0.0;
 perfil.push_back(aux);
+//perfil interior
+aux.x=0.7;aux.y=1.0;aux.z=0.0;
+perfil.push_back(aux);
+aux.x=0.4;aux.y=0.5;aux.z=0.0;
+perfil.push_back(aux);
+aux.x=0.3;aux.y=0.1;aux.z=0.0;
+perfil.push_back(aux);
+
+
 pan.parametros(perfil,12,0);
 altura = 1.0;
 }
@@ -429,6 +441,7 @@ glPopMatrix();
 
 _brazo::_brazo()
 {
+altura = 2.0;
 // perfil para un cilindro
 vector<_vertex3f> perfil;
 _vertex3f aux;
@@ -437,7 +450,7 @@ perfil.push_back(aux);
 aux.x=0.4;aux.y=2.0;aux.z=0.0;
 perfil.push_back(aux);
 br.parametros(perfil,12,0);
-altura = 2.0;
+
 }
 
 
@@ -481,30 +494,30 @@ glPopMatrix();
 
 
 
-_tanque::_tanque()
+_lampara::_lampara()
 {
 
-giro_brazo_inf = 30.0;
-giro_brazo_sup = -30.0;
-giro_pantalla = -45.0;
+giro_brazo_inf = 0.0;
+giro_brazo_sup = 0.0;
+giro_pantalla = 0.0;
 
 
 }
 
-void _tanque::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
+void _lampara::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
 {
 glPushMatrix();
 	base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-	glRotatef(giro_brazo_inf,0,0,1);
 	glTranslatef(0.0,base.altura,0.0);
-	brazo_sup.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	glRotatef(giro_brazo_inf,0,0,1);
+	brazo_inf.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPushMatrix();
-		glRotate(giro_brazo_sup,0,0,1);
-		glTranslatef(0.0,base.altura+brazo_sup.altura,0.0);
-		brazo_inf.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+		glTranslatef(0.0,brazo_inf.altura,0.0);
+		glRotatef(giro_brazo_sup,0,0,1);
+		brazo_sup.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 		glPushMatrix();
-			glRotate(giro_pantalla,0,0,1);
-			glTranslatef(0.0,base.altura+brazo_sup.altura+brazo_inf.altura,0.0);
+			glTranslatef(0.0,brazo_sup.altura,0.0);
+			glRotatef(giro_pantalla,0,0,1);
 			pantalla.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 		glPopMatrix();
 	glPopMatrix();

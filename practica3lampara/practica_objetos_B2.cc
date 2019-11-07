@@ -40,6 +40,7 @@ _rotacion rotacion;
 _pantalla pantalla;
 _brazo brazo;
 _base base;
+_lampara lampara;
 
 // _objeto_ply *ply1;
 
@@ -170,7 +171,8 @@ switch (t_objeto){
         case ARTICULADO:
         //pantalla.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
         //brazo.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-        base.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+        //base.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+        lampara.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
         
 	}
 
@@ -280,6 +282,16 @@ switch (Tecla1){
 	case GLUT_KEY_DOWN:Observer_angle_x++;break;
 	case GLUT_KEY_PAGE_UP:Observer_distance*=1.2;break;
 	case GLUT_KEY_PAGE_DOWN:Observer_distance/=1.2;break;
+	case GLUT_KEY_F1:lampara.giro_pantalla+=1;
+		             //if (tanque.giro_tubo>tanque.giro_tubo_max) tanque.giro_tubo=tanque.giro_tubo_max;
+		             break;
+	case GLUT_KEY_F2:lampara.giro_pantalla-=1;
+		             //if (tanque.giro_tubo<tanque.giro_tubo_min) tanque.giro_tubo=tanque.giro_tubo_min;
+		             break;
+	case GLUT_KEY_F3:lampara.giro_brazo_sup+=1;break;
+	case GLUT_KEY_F4:lampara.giro_brazo_sup-=1;break;
+	case GLUT_KEY_F5:lampara.giro_brazo_inf+=1;break;
+	case GLUT_KEY_F6:lampara.giro_brazo_inf-=1;break;
 	}
 glutPostRedisplay();
 }
