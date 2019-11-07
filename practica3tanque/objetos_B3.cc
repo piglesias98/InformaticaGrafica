@@ -251,7 +251,7 @@ _rotacion::_rotacion()
 }
 
 
-void _rotacion::parametros(vector<_vertex3f> perfil, int num, int tapa)
+void _rotacion::parametros(vector<_vertex3f> perfil, int num, int tapa, int tipo)
 {
 int i,j;
 _vertex3f vertice_aux;
@@ -293,11 +293,43 @@ for (j=0;j<num;j++)
  // tapa inferior
 if (fabs(perfil[0].x)>0.0 && tapa==1)
   {
+  
+  //Creamos el vértice de abajo
+  		if (tipo==0) vertice_aux.y = perfil[0].y;
+  		if (tipo==1) vertice_aux.y = -1.0;
+  		if (tipo==2) vertice_aux.y = 0.0;
+	  	vertice_aux.x = 0.0;
+	  	vertice_aux.z = 0.0;
+	  	vertices.push_back(vertice_aux);
+
+	  	cara_aux._0 = num_aux*num;	//el último vértice añadido
+
+	  	for (int i = 0; i < num; i++){
+		   cara_aux._1 = ((i+1)%num)*num_aux;
+		   cara_aux._2 = i*num_aux;
+		   caras.push_back(cara_aux);
+	  	}
+  
   }
  
  // tapa superior
  if (fabs(perfil[num_aux-1].x)>0.0 && tapa==1)
   {
+  
+  if (tipo==0) vertice_aux.y = perfil[num_aux-1].y;
+		if (tipo==1 || tipo==2) vertice_aux.y = 1.0;
+		vertice_aux.x = 0.0;
+		vertice_aux.z = 0.0;
+     	vertices.push_back(vertice_aux);
+
+     	cara_aux._0 = num_aux*num+1;
+
+     	for (int i = 0; i < num; i++){
+         cara_aux._1 = i*num_aux+num_aux-1;
+         cara_aux._2 = ((i+1)%num)*num_aux+num_aux-1;
+         caras.push_back(cara_aux);
+     	}
+  
   }
 }
 
@@ -314,7 +346,7 @@ aux.x=0.107;aux.y=-0.5;aux.z=0.0;
 perfil.push_back(aux);
 aux.x=0.107;aux.y=0.5;aux.z=0.0;
 perfil.push_back(aux);
-rodamiento.parametros(perfil,12,1);
+rodamiento.parametros(perfil,12,1,2);
 altura=0.22;
 };
 
@@ -389,7 +421,7 @@ aux.x=0.04;aux.y=-0.4;aux.z=0.0;
 perfil.push_back(aux);
 aux.x=0.04;aux.y=0.4;aux.z=0.0;
 perfil.push_back(aux);
-tubo_abierto.parametros(perfil,12,0);
+tubo_abierto.parametros(perfil,12,0,2);
 };
 
 void _tubo::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)

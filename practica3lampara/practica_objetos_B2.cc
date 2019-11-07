@@ -1,12 +1,13 @@
 //**************************************************************************
-// Práctica 3 usando objetos
+// Práctica 1 usando objetos
 //**************************************************************************
 
 #include <GL/glut.h>
 #include <ctype.h>
 #include <math.h>
 #include <vector>
-#include "objetos_B3.h"
+#include "objetos_B2.h"
+#include <iostream>
 
 
 using namespace std;
@@ -15,6 +16,9 @@ using namespace std;
 typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION, ARTICULADO} _tipo_objeto;
 _tipo_objeto t_objeto=CUBO;
 _modo   modo=POINTS;
+
+typedef enum{CONO, ESFERA, CILINDRO} _tipo_rotacion;
+_tipo_rotacion t_rotacion=CILINDRO;
 
 // variables que definen la posicion de la camara en coordenadas polares
 GLfloat Observer_distance;
@@ -33,7 +37,9 @@ _cubo cubo;
 _piramide piramide(0.85,1.3);
 _objeto_ply  ply; 
 _rotacion rotacion; 
-_tanque tanque;
+_pantalla pantalla;
+_brazo brazo;
+_base base;
 
 // _objeto_ply *ply1;
 
@@ -104,10 +110,53 @@ glVertex3f(0,0,AXIS_SIZE);
 glEnd();
 }
 
+//esfera
+
+float esfera(float x){
+	return sqrt(1-x*x);
+}
+
+
+//***************************************************************************
+// Funcion que crea los perfiles de los objetos de rotacion
+//***************************************************************************
+
+vector<_vertex3f> perfil_rotacion(){
+	cout<<"entra en perfil";
+	vector<_vertex3f> perfil2;
+	_vertex3f aux;
+	switch(t_rotacion){
+		case CILINDRO:
+			aux.x=1.0; aux.y=-1.0; aux.z=0.0;
+			perfil2.push_back(aux);
+			aux.x=1.0; aux.y=1.0; aux.z=0.0;
+			perfil2.push_back(aux);
+			cout<<"Cilindro";
+		break;
+		case ESFERA:
+			for (int i =1; i<6; i++){
+				aux.x=sin(M_PI*i/6);
+				aux.y=-cos(M_PI*i/6);
+				aux.z=0.0;
+				perfil2.push_back(aux);
+			}
+
+			cout<<"Esfera";
+		break;	
+		case CONO:
+			aux.x=0.5; aux.y=0.0; aux.z=0.0;
+			perfil2.push_back(aux);
+			cout<<"Cono";
+		break;
+	}
+	return perfil2;
+}
+
+
 
 //**************************************************************************
 // Funcion que dibuja los objetos
-//****************************2***********************************************
+//***************************************************************************
 
 void draw_objects()
 {
@@ -116,8 +165,13 @@ switch (t_objeto){
 	case CUBO: cubo.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
 	case PIRAMIDE: piramide.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
         case OBJETO_PLY: ply.draw(modo,1.0,0.6,0.0,0.0,1.0,0.3,2);break;
-        case ROTACION: rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-        case ARTICULADO: tanque.draw(modo,0.5,0.7,0.2,0.3,0.6,0.3,2);break;
+        case ROTACION:        
+        rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+        case ARTICULADO:
+        //pantalla.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+        //brazo.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+        base.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+        
 	}
 
 }
@@ -170,6 +224,7 @@ glutPostRedisplay();
 
 void normal_key(unsigned char Tecla1,int x,int y)
 {
+vector<_vertex3f> nulo = {{0.0,0.0,0.0}};
 switch (toupper(Tecla1)){
 	case 'Q':exit(0);
 	case '1':modo=POINTS;break;
@@ -181,6 +236,26 @@ switch (toupper(Tecla1)){
         case 'O':t_objeto=OBJETO_PLY;break;	
         case 'R':t_objeto=ROTACION;break;
         case 'A':t_objeto=ARTICULADO;break;
+        
+			  case 'E':t_rotacion=ESFERA;
+			  				cout<<"Le hemos dado a esfera";
+			  				rotacion.eliminar();
+			  				rotacion.parametros(perfil_rotacion(), 6, 1);
+		     				break;
+			  case 'I':t_rotacion=CILINDRO;
+			  cout<<"Le hemos dado a cilindro";
+			  				rotacion.eliminar();
+			  				rotacion.parametros(perfil_rotacion(), 20, 0);
+//		     				rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+		     				break;
+		   case 'N':t_rotacion=CONO;
+		   				cout<<"Le hemos dado a cono";
+		   				rotacion.eliminar();
+							rotacion.parametros(perfil_rotacion(), 20, 2);
+//							rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
+							break;
+							
+			  
 	}
 glutPostRedisplay();
 }
@@ -205,17 +280,12 @@ switch (Tecla1){
 	case GLUT_KEY_DOWN:Observer_angle_x++;break;
 	case GLUT_KEY_PAGE_UP:Observer_distance*=1.2;break;
 	case GLUT_KEY_PAGE_DOWN:Observer_distance/=1.2;break;
-        case GLUT_KEY_F1:tanque.giro_tubo+=1;
-                         if (tanque.giro_tubo>tanque.giro_tubo_max) tanque.giro_tubo=tanque.giro_tubo_max;
-                         break;
-        case GLUT_KEY_F2:tanque.giro_tubo-=1;
-                         if (tanque.giro_tubo<tanque.giro_tubo_min) tanque.giro_tubo=tanque.giro_tubo_min;
-                         break;break;
-        case GLUT_KEY_F3:tanque.giro_torreta+=5;break;
-        case GLUT_KEY_F4:tanque.giro_torreta-=5;break;
 	}
 glutPostRedisplay();
 }
+
+
+
 
 
 
@@ -251,6 +321,8 @@ glViewport(0,0,Window_width,Window_high);
 }
 
 
+	
+
 //***************************************************************************
 // Programa principal
 //
@@ -259,44 +331,24 @@ glViewport(0,0,Window_width,Window_high);
 //***************************************************************************
 
 
-int main(int argc, char **argv)
+int main(int argc, char *argv[] )
 {
- 
-
-// creación del objeto ply
-
-ply.parametros(argv[1]);
-
-
-// perfil 
-
+/*
 vector<_vertex3f> perfil2;
 _vertex3f aux;
-aux.x=1.0;aux.y=-1.4;aux.z=0.0;
-perfil2.push_back(aux);
-aux.x=1.0;aux.y=-1.1;aux.z=0.0;
-perfil2.push_back(aux);
-aux.x=0.5;aux.y=-0.7;aux.z=0.0;
-perfil2.push_back(aux);
-aux.x=0.4;aux.y=-0.4;aux.z=0.0;
-perfil2.push_back(aux);
-aux.x=0.4;aux.y=0.5;aux.z=0.0;
-perfil2.push_back(aux);
-aux.x=0.5;aux.y=0.6;aux.z=0.0;
-perfil2.push_back(aux);
-aux.x=0.3;aux.y=0.6;aux.z=0.0;
-perfil2.push_back(aux);
-aux.x=0.5;aux.y=0.8;aux.z=0.0;
-perfil2.push_back(aux);
-aux.x=0.55;aux.y=1.0;aux.z=0.0;
-perfil2.push_back(aux);
-aux.x=0.5;aux.y=1.2;aux.z=0.0;
-perfil2.push_back(aux);
-aux.x=0.3;aux.y=1.4;aux.z=0.0;
-perfil2.push_back(aux);
-rotacion.parametros(perfil2,6,1);
 
-
+aux.x=1.0; aux.y=-1.0; aux.z=0.0;
+perfil2.push_back(aux);
+aux.x=1.0; aux.y=1.0; aux.z=0.0;
+perfil2.push_back(aux);
+*/
+/*
+vector<_vertex3f> perfil2;
+perfil2={  {1.0,1.0,0.0},
+            {1.0,-1.0,0.0}};
+*/
+rotacion.eliminar();
+rotacion.parametros(perfil_rotacion(),20,0);
 // se llama a la inicialización de glut
 glutInit(&argc, argv);
 
@@ -332,6 +384,11 @@ glutSpecialFunc(special_key);
 
 // funcion de inicialización
 initialize();
+
+// creación del objeto ply
+ply.parametros(argv[1]);
+
+//ply1 = new _objeto_ply(argv[1]);
 
 // inicio del bucle de eventos
 glutMainLoop();
