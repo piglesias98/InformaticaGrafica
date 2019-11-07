@@ -41,6 +41,7 @@ _pantalla pantalla;
 _brazo brazo;
 _base base;
 _lampara lampara;
+_bombilla bombilla;
 
 // _objeto_ply *ply1;
 
@@ -172,6 +173,7 @@ switch (t_objeto){
         //pantalla.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
         //brazo.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
         //base.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+        //bombilla.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
         lampara.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
         
 	}

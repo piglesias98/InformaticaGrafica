@@ -110,6 +110,19 @@ protected:
 _rotacion  pan;
 };
 
+//************************************************************************
+
+class _bombilla: public _triangulos3D
+{
+public:
+       _bombilla();
+void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+float altura;
+
+protected:
+_rotacion  bom;
+};
+
 
 //************************************************************************
 
@@ -157,6 +170,7 @@ _pantalla pantalla;
 _brazo brazo_sup;
 _brazo brazo_inf;
 _base base;
+_bombilla bombilla;
 };
 
 

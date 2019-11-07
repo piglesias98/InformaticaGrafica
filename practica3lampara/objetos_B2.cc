@@ -402,29 +402,62 @@ if (fabs(perfil[0].x)>0.0)
 
 //************************************************************************
 
+_bombilla::_bombilla()
+{
+
+//perfil bombilla
+// perfil pantalla
+
+vector<_vertex3f> perfil_bombilla;
+_vertex3f aux_bombilla;
+for (int i =1; i<12; i++){
+		aux_bombilla.x=sin(M_PI*i/12);
+		aux_bombilla.y=-cos(M_PI*i/12);
+		aux_bombilla.z=0.0;
+		perfil_bombilla.push_back(aux_bombilla);
+	}
+
+bom.parametros(perfil_bombilla, 12, 1);
+
+}
+
+void _bombilla::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
+{
+glPushMatrix();
+glScalef(0.3,0.3,0.3);
+bom.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+glPopMatrix();
+}
+
+//************************************************************************
+
 _pantalla::_pantalla()
 {
-// perfil para un cilindro
+
+altura = 1.0;
+
+// perfil pantalla
 vector<_vertex3f> perfil;
 _vertex3f aux;
 //perfil exterior
-aux.x=0.4;aux.y=0.0;aux.z=0.0;
+aux.x=0.2;aux.y=0.0;aux.z=0.0;
 perfil.push_back(aux);
-aux.x=0.5;aux.y=0.5;aux.z=0.0;
+aux.x=0.3;aux.y=0.3;aux.z=0.0;
+perfil.push_back(aux);
+aux.x=0.7;aux.y=0.7;aux.z=0.0;
 perfil.push_back(aux);
 aux.x=0.8;aux.y=1.0;aux.z=0.0;
 perfil.push_back(aux);
 //perfil interior
 aux.x=0.7;aux.y=1.0;aux.z=0.0;
 perfil.push_back(aux);
-aux.x=0.4;aux.y=0.5;aux.z=0.0;
+aux.x=0.6;aux.y=0.7;aux.z=0.0;
 perfil.push_back(aux);
-aux.x=0.3;aux.y=0.1;aux.z=0.0;
+aux.x=0.2;aux.y=0.3;aux.z=0.0;
 perfil.push_back(aux);
-
 
 pan.parametros(perfil,12,0);
-altura = 1.0;
+
 }
 
 
@@ -445,9 +478,9 @@ altura = 2.0;
 // perfil para un cilindro
 vector<_vertex3f> perfil;
 _vertex3f aux;
-aux.x=0.4;aux.y=0.0;aux.z=0.0;
+aux.x=0.2;aux.y=0.0;aux.z=0.0;
 perfil.push_back(aux);
-aux.x=0.4;aux.y=2.0;aux.z=0.0;
+aux.x=0.2;aux.y=2.0;aux.z=0.0;
 perfil.push_back(aux);
 br.parametros(perfil,12,0);
 
@@ -468,15 +501,16 @@ glPopMatrix();
 
 _base::_base()
 {
+altura = 0.3;
 // perfil para un cilindro
 vector<_vertex3f> perfil;
 _vertex3f aux;
 aux.x=1.0;aux.y=0.0;aux.z=0.0;
 perfil.push_back(aux);
-aux.x=1.0;aux.y=0.5;aux.z=0.0;
+aux.x=1.0;aux.y=0.3;aux.z=0.0;
 perfil.push_back(aux);
 bas.parametros(perfil,12,0);
-altura = 0.5;
+
 }
 
 
@@ -518,9 +552,17 @@ glPushMatrix();
 		glPushMatrix();
 			glTranslatef(0.0,brazo_sup.altura,0.0);
 			glRotatef(giro_pantalla,0,0,1);
-			pantalla.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+				glPushMatrix();
+					glTranslatef(0.0,2* pantalla.altura/3,0.0);
+					bombilla.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+				glPopMatrix();
+				glPushMatrix();	
+					pantalla.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+				glPopMatrix();
+
 		glPopMatrix();
 	glPopMatrix();
+glPopMatrix();
 }
 
 
