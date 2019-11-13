@@ -534,13 +534,23 @@ _lampara::_lampara()
 giro_brazo_inf = 0.0;
 giro_brazo_sup = 0.0;
 giro_pantalla = 0.0;
+traslacion_x = 0.0;
+traslacion_y =0.0;
 
+giro_brazo_inf_min=-30.0;
+giro_brazo_sup_min=-45.0;
+giro_pantalla_min=-90.0;
+giro_brazo_inf_max=30.0;
+giro_brazo_sup_max=45.0;
+giro_pantalla_max=90.0;
 
 }
 
 void _lampara::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
 {
 glPushMatrix();
+	glTranslatef(0.0,traslacion_y,0.0);
+	glTranslatef(traslacion_x,0.0,0.0);
 	base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glTranslatef(0.0,base.altura,0.0);
 	glRotatef(giro_brazo_inf,0,0,1);

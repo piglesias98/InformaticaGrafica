@@ -163,6 +163,15 @@ void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b
 float giro_brazo_inf;
 float giro_brazo_sup;
 float giro_pantalla;
+float traslacion_x;
+float traslacion_y;
+
+float giro_brazo_inf_min;
+float giro_brazo_sup_min;
+float giro_pantalla_min;
+float giro_brazo_inf_max;
+float giro_brazo_sup_max;
+float giro_pantalla_max;
 
 
 protected:

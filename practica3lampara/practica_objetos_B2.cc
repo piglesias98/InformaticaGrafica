@@ -14,7 +14,7 @@ using namespace std;
 
 // tipos
 typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION, ARTICULADO} _tipo_objeto;
-_tipo_objeto t_objeto=CUBO;
+_tipo_objeto t_objeto=ARTICULADO;
 _modo   modo=POINTS;
 
 typedef enum{CONO, ESFERA, CILINDRO} _tipo_rotacion;
@@ -43,8 +43,14 @@ _base base;
 _lampara lampara;
 _bombilla bombilla;
 
-// _objeto_ply *ply1;
+//Variables para la animación
+int valor_lento = 0;
+int valor_rapido = 0;
+int flag_giro_brazo_sup=1;
+int flag_giro_brazo_inf=0;
+int flag_giro_pantalla=0;
 
+// _objeto_ply *ply1;
 
 //**************************************************************************
 //
@@ -55,6 +61,70 @@ void clean_window()
 
 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 }
+
+
+//***************************************************************************
+// Animación
+//
+// 
+// 
+//***************************************************************************
+
+void actualizaPos(){
+	//Pantalla
+	if (flag_giro_pantalla == 1){
+		lampara.giro_pantalla+=valor_lento;
+		if (lampara.giro_pantalla>lampara.giro_pantalla_max){
+			lampara.wvww2w11qgiro_pantalla=lampara.giro_pantalla_max;
+			flag_giro_pantalla=0;
+		}
+	}else{
+		lampara.giro_pantalla-=valor_lento;
+		if (lampara.giro_pantalla<lampara.giro_pantalla_min){
+			lampara.giro_pantalla=lampara.giro_pantalla_min;
+			flag_giro_pantalla=1;
+		}
+	}
+	
+	
+	//Brazo superior
+	if (flag_giro_brazo_sup == 1){
+		lampara.giro_brazo_sup+=valor_rapido;
+		if (lampara.giro_brazo_sup>lampara.giro_brazo_sup_max){
+			lampara.giro_brazo_sup=lampara.giro_brazo_sup_max;
+			flag_giro_brazo_sup=0;
+		}
+	}else{
+		lampara.giro_brazo_sup-=valor_rapido;
+		if (lampara.giro_brazo_sup<lampara.giro_brazo_sup_min){
+			lampara.giro_brazo_sup=lampara.giro_brazo_sup_min;
+			flag_giro_brazo_sup=1;
+		}
+	}
+	
+	
+	//Brazo inferior
+	if (flag_giro_brazo_inf == 1){
+		lampara.giro_brazo_inf+=valor_lento;
+		if (lampara.giro_brazo_inf>lampara.giro_brazo_inf_max){
+			lampara.giro_brazo_inf=lampara.giro_brazo_inf_max;
+			flag_giro_brazo_inf=0;
+		}
+	}else{
+		lampara.giro_brazo_inf-=valor_lento;
+		if (lampara.giro_brazo_inf<lampara.giro_brazo_inf_min){
+			lampara.giro_brazo_inf=lampara.giro_brazo_inf_min;
+			flag_giro_brazo_inf=1;
+		}
+	}
+}
+
+void on_idle(){
+	actualizaPos();
+	glutPostRedisplay();
+}
+
+
 
 
 //**************************************************************************
@@ -240,6 +310,8 @@ switch (toupper(Tecla1)){
         case 'O':t_objeto=OBJETO_PLY;break;	
         case 'R':t_objeto=ROTACION;break;
         case 'A':t_objeto=ARTICULADO;break;
+        case 'X':valor_lento = 1; valor_rapido=5;break;
+        case 'Z':valor_lento = 0; valor_rapido=0;break;
         
 			  case 'E':t_rotacion=ESFERA;
 			  				cout<<"Le hemos dado a esfera";
@@ -285,15 +357,25 @@ switch (Tecla1){
 	case GLUT_KEY_PAGE_UP:Observer_distance*=1.2;break;
 	case GLUT_KEY_PAGE_DOWN:Observer_distance/=1.2;break;
 	case GLUT_KEY_F1:lampara.giro_pantalla+=1;
-		             //if (tanque.giro_tubo>tanque.giro_tubo_max) tanque.giro_tubo=tanque.giro_tubo_max;
+							if (lampara.giro_pantalla>lampara.giro_pantalla_max) lampara.giro_pantalla=lampara.giro_pantalla_max;
 		             break;
 	case GLUT_KEY_F2:lampara.giro_pantalla-=1;
-		             //if (tanque.giro_tubo<tanque.giro_tubo_min) tanque.giro_tubo=tanque.giro_tubo_min;
+		             if (lampara.giro_pantalla<lampara.giro_pantalla_min) lampara.giro_pantalla=lampara.giro_pantalla_min;
 		             break;
-	case GLUT_KEY_F3:lampara.giro_brazo_sup+=1;break;
-	case GLUT_KEY_F4:lampara.giro_brazo_sup-=1;break;
-	case GLUT_KEY_F5:lampara.giro_brazo_inf+=1;break;
-	case GLUT_KEY_F6:lampara.giro_brazo_inf-=1;break;
+	case GLUT_KEY_F3:lampara.giro_brazo_sup+=1;
+							if (lampara.giro_brazo_sup>lampara.giro_brazo_sup_max) lampara.giro_brazo_sup=lampara.giro_brazo_sup_max;
+							break;
+	case GLUT_KEY_F4:lampara.giro_brazo_sup-=1;
+							if (lampara.giro_brazo_sup<lampara.giro_brazo_sup_min) lampara.giro_brazo_sup=lampara.giro_brazo_sup_min;
+							break;
+	case GLUT_KEY_F5:lampara.giro_brazo_inf+=1;
+							if (lampara.giro_brazo_inf>lampara.giro_brazo_inf_max) lampara.giro_brazo_inf=lampara.giro_brazo_inf_max;
+							break;
+	case GLUT_KEY_F6:lampara.giro_brazo_inf-=1;
+							if (lampara.giro_brazo_inf<lampara.giro_brazo_inf_min) lampara.giro_brazo_inf=lampara.giro_brazo_inf_min;
+							break;
+	case GLUT_KEY_F7:lampara.traslacion-=0.5;break;
+	case GLUT_KEY_F8:lampara.traslacion+=0.5;break;
 	}
 glutPostRedisplay();
 }
@@ -333,6 +415,11 @@ glViewport(0,0,Window_width,Window_high);
 
 
 }
+
+
+
+
+
 
 
 	
@@ -396,11 +483,18 @@ glutKeyboardFunc(normal_key);
 // asignación de la funcion llamada "tecla_Especial" al evento correspondiente
 glutSpecialFunc(special_key);
 
+//ANIMACION
+
+glutIdleFunc(on_idle);
+
+
 // funcion de inicialización
 initialize();
 
 // creación del objeto ply
 ply.parametros(argv[1]);
+
+
 
 //ply1 = new _objeto_ply(argv[1]);
 
