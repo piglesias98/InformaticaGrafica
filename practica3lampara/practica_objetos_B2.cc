@@ -75,7 +75,7 @@ void actualizaPos(){
 	if (flag_giro_pantalla == 1){
 		lampara.giro_pantalla+=valor_lento;
 		if (lampara.giro_pantalla>lampara.giro_pantalla_max){
-			lampara.wvww2w11qgiro_pantalla=lampara.giro_pantalla_max;
+			lampara.giro_pantalla=lampara.giro_pantalla_max;
 			flag_giro_pantalla=0;
 		}
 	}else{
@@ -194,7 +194,6 @@ float esfera(float x){
 //***************************************************************************
 
 vector<_vertex3f> perfil_rotacion(){
-	cout<<"entra en perfil";
 	vector<_vertex3f> perfil2;
 	_vertex3f aux;
 	switch(t_rotacion){
@@ -203,7 +202,6 @@ vector<_vertex3f> perfil_rotacion(){
 			perfil2.push_back(aux);
 			aux.x=1.0; aux.y=1.0; aux.z=0.0;
 			perfil2.push_back(aux);
-			cout<<"Cilindro";
 		break;
 		case ESFERA:
 			for (int i =1; i<6; i++){
@@ -212,13 +210,10 @@ vector<_vertex3f> perfil_rotacion(){
 				aux.z=0.0;
 				perfil2.push_back(aux);
 			}
-
-			cout<<"Esfera";
 		break;	
 		case CONO:
 			aux.x=0.5; aux.y=0.0; aux.z=0.0;
 			perfil2.push_back(aux);
-			cout<<"Cono";
 		break;
 	}
 	return perfil2;
@@ -240,10 +235,6 @@ switch (t_objeto){
         case ROTACION:        
         rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
         case ARTICULADO:
-        //pantalla.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-        //brazo.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-        //base.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-        //bombilla.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
         lampara.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
         
 	}
@@ -310,25 +301,20 @@ switch (toupper(Tecla1)){
         case 'O':t_objeto=OBJETO_PLY;break;	
         case 'R':t_objeto=ROTACION;break;
         case 'A':t_objeto=ARTICULADO;break;
-        case 'X':valor_lento = 1; valor_rapido=5;break;
+        case 'X':valor_lento = 1; valor_rapido=3;break;
         case 'Z':valor_lento = 0; valor_rapido=0;break;
         
 			  case 'E':t_rotacion=ESFERA;
-			  				cout<<"Le hemos dado a esfera";
 			  				rotacion.eliminar();
 			  				rotacion.parametros(perfil_rotacion(), 6, 1);
 		     				break;
 			  case 'I':t_rotacion=CILINDRO;
-			  cout<<"Le hemos dado a cilindro";
 			  				rotacion.eliminar();
 			  				rotacion.parametros(perfil_rotacion(), 20, 0);
-//		     				rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
 		     				break;
 		   case 'N':t_rotacion=CONO;
-		   				cout<<"Le hemos dado a cono";
 		   				rotacion.eliminar();
 							rotacion.parametros(perfil_rotacion(), 20, 2);
-//							rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);
 							break;
 							
 			  
@@ -374,8 +360,8 @@ switch (Tecla1){
 	case GLUT_KEY_F6:lampara.giro_brazo_inf-=1;
 							if (lampara.giro_brazo_inf<lampara.giro_brazo_inf_min) lampara.giro_brazo_inf=lampara.giro_brazo_inf_min;
 							break;
-	case GLUT_KEY_F7:lampara.traslacion-=0.5;break;
-	case GLUT_KEY_F8:lampara.traslacion+=0.5;break;
+	case GLUT_KEY_F7:lampara.traslacion_x+=0.5;break;
+	case GLUT_KEY_F8:lampara.traslacion_x-=0.5;break;
 	}
 glutPostRedisplay();
 }
