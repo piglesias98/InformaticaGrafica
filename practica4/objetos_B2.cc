@@ -527,6 +527,8 @@ if (fabs(perfil[0].x)>0.0)
 _bombilla::_bombilla()
 {
 
+
+
 //perfil bombilla
 // perfil pantalla
 
@@ -545,6 +547,7 @@ bom.parametros(perfil_bombilla, 12, 1);
 
 void _bombilla::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor, _vertex4f ambiente_difusa, _vertex4f especular, float brillo)
 {
+
 glPushMatrix();
 glScalef(0.3,0.3,0.3);
 bom.draw(modo, r1, g1, b1, r2, g2, b2, grosor,ambiente_difusa,  especular,  brillo);
@@ -677,6 +680,20 @@ giro_pantalla_max=90.0;
 
 void _lampara::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor, _vertex4f ambiente_difusa, _vertex4f especular, float brillo)
 {
+
+glEnable(GL_LIGHT2);
+GLfloat light_ambient[] = {0.2, 0.2, 0.2, 1.0};       
+GLfloat light_diffuse[] = {0.5, 0.5, 0.5, 1.0};        
+GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};  
+GLfloat light_position[] = {0.0, 0.0, 0.0, 1.0};        
+glLightfv(GL_LIGHT2, GL_AMBIENT, light_ambient);        
+glLightfv(GL_LIGHT2, GL_DIFFUSE, light_diffuse);        
+glLightfv(GL_LIGHT2, GL_SPECULAR, light_specular);
+//glLightfv(GL_LIGHT2, GL_CONSTANT_ATTENUATION, 2.0);
+//glLightfv(GL_LIGHT2, GL_LINEAR_ATTENUATION, 1.0);
+//glLightfv(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, 0.5);
+
+
 glPushMatrix();
 	glTranslatef(0.0,traslacion_y,0.0);
 	glTranslatef(traslacion_x,0.0,0.0);
@@ -694,6 +711,9 @@ glPushMatrix();
 				glPushMatrix();
 					glTranslatef(0.0,2* pantalla.altura/3,0.0);
 					bombilla.draw(modo, r1, g1, b1, r2, g2, b2, grosor, ambiente_difusa, especular, brillo);
+					//!
+					 
+					glLightfv(GL_LIGHT2, GL_POSITION, light_position);
 				glPopMatrix();
 				glPushMatrix();	
 					pantalla.draw(modo, r1, g1, b1, r2, g2, b2, grosor, ambiente_difusa, especular, brillo);
