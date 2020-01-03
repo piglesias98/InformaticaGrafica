@@ -5,6 +5,69 @@
 // GPL
 //**************************************************************************
 
+/*
+
+CUANDO SE ENTREGA
+PASADA LAS VACACIONES
+de forma presencial enseñar la última práctica en periodo de exámenes
+calificaciones de las otras cuatro --> el dia que vayamos a entregar la quinta práctica
+
+como el examen es el último
+primera semana de la vuelta
+le da igual sobre la práctica
+
+a partir de la vuelta de navidad, nos citará le enseñamos esta 
+TIENE QUE SER CON LA PRÁCTICA 3 DE BASE 
+
+
+
+
+
+No creo que llegue viva al día 22
+cuando hay que entregar todo esto
+encima ya no hay clases ni tutorías
+qué mal todooooooooooooooooooooo
+
+Partir de la práctica 3 nuestro objeto articulado
+Hacer el zoom de la cámara en perspectiva (del primer punto)
+- cámara ortogonal y su zoom
+dos modos de selección
+- el objeto completo
+- dado un objeto que se pueda seleccionar una de sus caras
+
+tomamos el objeto articulado
+hacemos una seleccion de los triangulos que lo forman
+subir nota --> que se pueda hacer lo mismo con todos los objetos
+
+añadir el punto uno a nuestro código
+
+camara ortogonal --> cambiando el change_projection
+gl frustrum es normal
+si queremos pararelo tenemos que poner orto
+
+problema -->esta funcion se la llama una sola vez, en initialize
+donde pone cambiar observador llamar a change_projection
+
+subir nota --> cambiar de una camara a otra cuatro vistas
+vista en alzado, perfil, planta y perspectiva
+
+el fichero punto h de la practica 3
+añadir metodo
+- draw_solido_seleccion_completa(float r, float g, float b);
+- draw_solido_seleccion_cara(float r, float g, float b); una cara de un color y otras de otro
+metodo para dibujar solido cara(mismos parametros que los anteriores, int n) (no es selección, como los anteriores)
+también podríamos hacer uno draw solido arista
+n seria el triangulo que se pintaría de un color distinto
+hacer la seleccion solamente cuando sea solo --> para subir nota
+pintar modo linea y modo solido al mismo tiempo para que se distingan las caras
+glColor3ub(r,g,b)
+aydiosito
+poner el glcolor dentro de cada for para que se pinten todos
+
+
+
+
+*/
 #include "stdlib.h"
 #include "stdio.h"
 #include <GL/glut.h>
@@ -34,6 +97,8 @@ float factor=1.0;
 
 void pick_color(int x, int y);
 
+int tipo_camara = 0;
+
 //**************************************************************************
 //
 //***************************************************************************
@@ -57,7 +122,13 @@ glLoadIdentity();
 
 // formato(x_minimo,x_maximo, y_minimo, y_maximo,Front_plane, plano_traser)
 //  Front_plane>0  Back_plane>PlanoDelantero)
+
+if (tipo_camara == 0 )
 glFrustum(-Window_width,Window_width,-Window_height,Window_height,Front_plane,Back_plane);
+if (tipo_camara == 1){	//Cambiamos el tipo de cámara con una tecla --> c perspectiva, v paralela
+glOrtho(-2,2,2,2,-100,100);
+glScalef(factor, factor,1);
+}
 }
 
 //**************************************************************************
@@ -76,6 +147,14 @@ glTranslatef(0,0,-Observer_distance);
 glRotatef(Observer_angle_x,1,0,0);
 glRotatef(Observer_angle_y,0,1,0);
 }
+
+
+/*
+
+como se hace un zoom en paralelo?
+glOrtho
+
+*/
 
 //**************************************************************************
 // Funcion que dibuja los ejes utilizando la primitiva grafica de lineas
@@ -188,17 +267,17 @@ int inc=20;
 
 void draw_scene(void)
 {
-glDrawBuffer(GL_FRONT);
+glDrawBuffer(GL_FRONT);	//se borra la ventana se coloca la camara...
 clear_window();
 change_observer();
 draw_axis();
-draw_objects();
+draw_objects();	//objetos articulado
 
 
 glDrawBuffer(GL_BACK);
 clear_window();
 change_observer();
-draw_objects_seleccion();
+draw_objects_seleccion();	//pintamos los  objetos otra vez cada pieza con un color distinto
 
 glFlush();
 }
@@ -282,7 +361,7 @@ if(boton== GLUT_RIGHT_BUTTON) {
      } 
    else estadoRaton[2] = 1;
    }
-if(boton== GLUT_LEFT_BUTTON) {
+if(boton== GLUT_LEFT_BUTTON) {	//controla el pick (botón izq)
   if( estado == GLUT_DOWN) {
       estadoRaton[2] = 2;
       xc=x;
@@ -291,6 +370,11 @@ if(boton== GLUT_LEFT_BUTTON) {
     } 
   }
 }
+
+//poner un if --> si el botón es una rueda hacer zoom
+//como? utilizando los mismos valores del zoom en la tecla
+//factor*=0.9
+
 
 /*************************************************************************/
 
@@ -310,17 +394,19 @@ Observer_angle_y=y;
 
 
 
+//
+
 /*************************************************************************/
 
 void RatonMovido( int x, int y )
 {
 float x0, y0, xn, yn; 
 if(estadoRaton[2]==1) 
-    {getCamara(&x0,&y0);
+    {getCamara(&x0,&y0);	//valores de giro que tiene la camara
      yn=y0+(y-yc);
      xn=x0-(x-xc);
-     setCamara(xn,yn);
-     xc=x;
+     setCamara(xn,yn);	//cambiamos la cámara
+     xc=x;	//actualizamos los valores de x e y
      yc=y;
      glutPostRedisplay();
     }
@@ -411,10 +497,11 @@ void pick_color(int x, int y)
 {
 GLint viewport[4];
 unsigned char pixel[3];
-
-glGetIntegerv(GL_VIEWPORT, viewport);
+//si quisieramos leer 100 pixel[100][3]
+glGetIntegerv(GL_VIEWPORT, viewport);	//me olvido y directamente pongo el tamaño grande x,alto
 glReadBuffer(GL_BACK);
-glReadPixels(x,viewport[3]-y,1,1,GL_RGB,GL_UNSIGNED_BYTE,(GLubyte *) &pixel[0]);
+glReadPixels(x,viewport[3]-y,1,1,GL_RGB,GL_UNSIGNED_BYTE,(GLubyte *) &pixel[0]);	//nos lo da el punto en coord de dispositivo
+//podriamos leer varios pixeles, 1,1, --> 100,100
 printf(" valor x %d, valor y %d, color %d, %d, %d \n",x,y,pixel[0],pixel[1],pixel[2]);
 
 procesar_color(pixel);
