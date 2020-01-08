@@ -62,6 +62,7 @@ float factor=1.0;
 void pick_color(int x, int y);
 
 int tipo_camara = 0;
+float r=1.0, g=0.0, b=0.0;
 
 
 
@@ -251,7 +252,7 @@ vector<_vertex3f> perfil_rotacion(){
 
 
 
-//**************************************************************************
+//*********1.0,0.0,0.0*****************************************************************
 // Funcion que dibuja los objetos
 //***************************************************************************
 
@@ -259,13 +260,13 @@ void draw_objects()
 {
 
 switch (t_objeto){
-	case CUBO: cubo.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
-	case PIRAMIDE: piramide.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+	case CUBO: cubo.draw(modo,r,g,b,g,r,b,2);break;
+	case PIRAMIDE: piramide.draw(modo,r,g,b,g,r,b,2);break;
         case OBJETO_PLY: ply.draw(modo,1.0,0.6,0.0,0.0,1.0,0.3,2);break;
         case ROTACION:        
-        rotacion.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+        rotacion.draw(modo,r,g,b,g,r,b,2);break;
         case ARTICULADO:
-        lampara.draw(modo,1.0,0.0,0.0,0.0,1.0,0.0,2);break;
+        lampara.draw(modo,r,g,b,g,r,b,2);break;
         
 	}
 
@@ -432,7 +433,6 @@ glutPostRedisplay();
 
 void procesar_color(unsigned char color[3])
 {
-int r,g,b;
 if(cambio==1){
 	r=0.3;
 	g=0.9;
@@ -444,16 +444,18 @@ if(cambio==1){
 	b=0.2;
 	cambio=1;
 }
+/*
 switch (t_objeto){
-	case CUBO: cubo.draw_solido(r,g,b);break;
-	case PIRAMIDE: piramide.draw_solido(r,g,b);break;
-		  case OBJETO_PLY: ply.draw_solido(r,g,b);break;
+	case CUBO: cubo.draw(modo,r,g,b,r,g,b,2);break;
+	case PIRAMIDE: piramide.draw(modo,r,g,b,r,g,b,2);break;
+		  case OBJETO_PLY: ply.draw(modo,r,g,b,r,g,b,2);break;
 		  case ROTACION:        
-		  rotacion.draw_solido(r,g,b);break;
+		  rotacion.draw(modo,r,g,b,r,g,b,2);break;
 		  case ARTICULADO:
-		  lampara.draw_solido(r,g,b);break;    
+		  printf("entra aqui");
+		  lampara.draw(modo,r,g,b,r,g,b,2);break;    
 }
-                 
+*/               
 }
  
  
@@ -475,7 +477,7 @@ glutPostRedisplay();
 //***************************************************************************
 // Funciones para manejo de eventos del ratón
 //***************************************************************************
-/*
+
 void clickRaton( int boton, int estado, int x, int y )
 {
 if(boton== GLUT_RIGHT_BUTTON) {
@@ -493,9 +495,9 @@ if(boton== GLUT_LEFT_BUTTON) {	//controla el pick (botón izq)
       yc=y;
       pick_color(xc, yc);
     } 
-  }BACK_PLANE
+  }
 }
-*/
+
 /*************************************************************************/
 
 void getCamara (GLfloat *x, GLfloat *y)
@@ -630,9 +632,10 @@ glutSpecialFunc(special_key);
 glutIdleFunc(on_idle);
 
 
+
 // eventos ratón
-//glutMouseFunc( clickRaton );
-//glutMotionFunc( RatonMovido );
+glutMouseFunc( clickRaton );
+glutMotionFunc( RatonMovido );
 
 
 // funcion de inicialización
