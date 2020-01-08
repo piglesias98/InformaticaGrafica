@@ -15,7 +15,7 @@ using namespace std;
 // tipos
 typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION, ARTICULADO} _tipo_objeto;
 _tipo_objeto t_objeto=ARTICULADO;
-_modo   modo=POINTS;
+_modo   modo=LINEA_SOLIDO;
 
 typedef enum{CONO, ESFERA, CILINDRO} _tipo_rotacion;
 _tipo_rotacion t_rotacion=CILINDRO;
@@ -54,7 +54,7 @@ int flag_giro_pantalla=0;
 
 
 //Práctica 5
-//int estadoRaton[3], xc, yc, modo[5], cambio=0;
+int estadoRaton[3], xc, yc, cambio=0;
 
 int Ancho=450, Alto=450;
 float factor=1.0;
@@ -74,7 +74,6 @@ void clean_window()
 
 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 }
-
 
 //***************************************************************************
 // Animación
@@ -153,14 +152,14 @@ glLoadIdentity();
 
 if (tipo_camara == 0 )
 	//glFrustum(-Size_x,Size_x,-Size_y,Size_y,Front_plane,Back_plane);
-	glFrustum(-Window_width,Window_width,-Window_high,Window_high,Front_plane,Back_plane);
+	glFrustum(-Size_x,Size_x,-Size_y,Size_y,Front_plane,Back_plane);
 if (tipo_camara == 1){	//Cambiamos el tipo de cámara con una tecla --> c perspectiva, v paralela
 	glOrtho(-2,2,2,2,-100,100);
 	glScalef(factor, factor,1);
 }
 }
-*/
 
+*/
 void change_projection()
 {
 
@@ -179,7 +178,7 @@ glFrustum(-Size_x,Size_x,-Size_y,Size_y,Front_plane,Back_plane);
 
 void change_observer()
 {
-
+glViewport(0,0,Ancho,Alto);
 // posicion del observador
 glMatrixMode(GL_MODELVIEW);
 glLoadIdentity();
@@ -274,17 +273,45 @@ switch (t_objeto){
 
 
 //**************************************************************************
+// Funcion que dibuja los objetos en el buffer trasero
+//***************************************************************************
+
+void draw_objects_seleccion()
+{
+switch (t_objeto){
+	case CUBO: cubo.draw(SELECCION,100.0,100.0,100.0,100.0,100.0,100.0,2);break;
+	case PIRAMIDE: piramide.draw(SELECCION,100.0,100.0,100.0,100.0,100.0,100.0,2);break;
+        case OBJETO_PLY: ply.draw(SELECCION,100.0,100.0,100.0,100.0,100.0,100.0,2);break;
+        case ROTACION:        
+        rotacion.draw(SELECCION,100.0,100.0,100.0,100.0,100.0,100.0,2);break;
+        case ARTICULADO:
+        lampara.draw(SELECCION,100.0,100.0,100.0,100.0,100.0,100.0,2);break;
+        
+	}
+
+}
+
+
+//**************************************************************************
 //
 //***************************************************************************
 
 void draw(void)
 {
-
+glDrawBuffer(GL_FRONT);	//se borra la ventana se coloca la camara...
 clean_window();
 change_observer();
 draw_axis();
-draw_objects();
-glutSwapBuffers();
+draw_objects();	//objetos articulado
+
+
+glDrawBuffer(GL_BACK);
+clean_window();
+change_observer();
+draw_objects_seleccion();	//pintamos los  objetos otra vez cada pieza con un color distinto
+
+glFlush();
+
 }
 
 
@@ -398,11 +425,40 @@ switch (Tecla1){
 glutPostRedisplay();
 }
 
+//***************************************************************************
+// Funciones para la seleccion
+//************************************************************************
 
-/*
+
+void procesar_color(unsigned char color[3])
+{
+int r,g,b;
+if(cambio==1){
+	r=0.3;
+	g=0.9;
+	b=0.3;
+	cambio=0;
+}else{
+	r=0.9;
+	g=0.6;
+	b=0.2;
+	cambio=1;
+}
+switch (t_objeto){
+	case CUBO: cubo.draw_solido(r,g,b);break;
+	case PIRAMIDE: piramide.draw_solido(r,g,b);break;
+		  case OBJETO_PLY: ply.draw_solido(r,g,b);break;
+		  case ROTACION:        
+		  rotacion.draw_solido(r,g,b);break;
+		  case ARTICULADO:
+		  lampara.draw_solido(r,g,b);break;    
+}
+                 
+}
+ 
+ 
 void pick_color(int x, int y)
 {
-
 GLint viewport[4];
 unsigned char pixel[3];
 //si quisieramos leer 100 pixel[100][3]
@@ -416,7 +472,62 @@ procesar_color(pixel);
 glutPostRedisplay();
 }
 
+//***************************************************************************
+// Funciones para manejo de eventos del ratón
+//***************************************************************************
+/*
+void clickRaton( int boton, int estado, int x, int y )
+{
+if(boton== GLUT_RIGHT_BUTTON) {
+   if( estado == GLUT_DOWN) {
+      estadoRaton[2] = 1;
+      xc=x;
+      yc=y;
+     } 
+   else estadoRaton[2] = 1;
+   }
+if(boton== GLUT_LEFT_BUTTON) {	//controla el pick (botón izq)
+  if( estado == GLUT_DOWN) {
+      estadoRaton[2] = 2;
+      xc=x;
+      yc=y;
+      pick_color(xc, yc);
+    } 
+  }BACK_PLANE
+}
 */
+/*************************************************************************/
+
+void getCamara (GLfloat *x, GLfloat *y)
+{
+*x=Observer_angle_x;
+*y=Observer_angle_y;
+}
+
+/*************************************************************************/
+
+void setCamara (GLfloat x, GLfloat y)
+{
+Observer_angle_x=x;
+Observer_angle_y=y;
+}
+
+
+/*************************************************************************/
+
+void RatonMovido( int x, int y )
+{
+float x0, y0, xn, yn; 
+if(estadoRaton[2]==1) 
+    {getCamara(&x0,&y0);	//valores de giro que tiene la camara
+     yn=y0+(y-yc);
+     xn=x0-(x-xc);
+     setCamara(xn,yn);	//cambiamos la cámara
+     xc=x;	//actualizamos los valores de x e y
+     yc=y;
+     glutPostRedisplay();
+    }
+}
 
 
 
@@ -450,10 +561,6 @@ glViewport(0,0,Window_width,Window_high);
 
 
 }
-
-
-
-
 
 
 
@@ -521,6 +628,11 @@ glutSpecialFunc(special_key);
 //ANIMACION
 
 glutIdleFunc(on_idle);
+
+
+// eventos ratón
+//glutMouseFunc( clickRaton );
+//glutMotionFunc( RatonMovido );
 
 
 // funcion de inicialización

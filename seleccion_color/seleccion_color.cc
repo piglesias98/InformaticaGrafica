@@ -227,6 +227,7 @@ void draw_objects()
 
 void draw_objects_seleccion()
 {
+
 int inc=20;
    glPushMatrix();    
      glTranslatef(0.0,-0.4,0.0);
@@ -258,6 +259,7 @@ int inc=20;
      draw_seleccion_color(piramide5,100+inc,100+inc,100+inc);
      glPopMatrix(); 
    glPopMatrix();   
+
 }
 
 
@@ -292,6 +294,7 @@ glFlush();
 // nuevo alto
 //***************************************************************************
 
+/*
 void change_window_size(int Ancho1,int Alto1)
 {
 change_projection();
@@ -299,7 +302,18 @@ Ancho=Ancho1;
 Alto=Alto1;
 draw_scene();
 }  
+*/
 
+void change_window_size(int Ancho1,int Alto1)
+{
+float Aspect_ratio;
+
+Aspect_ratio=(float) Alto1/(float )Ancho1;
+UI_window_height=UI_window_width*Aspect_ratio;
+change_projection();
+glViewport(0,0,Ancho1,Alto1);
+glutPostRedisplay();
+}
 
 //***************************************************************************
 // Funcion llamada cuando se produce aprieta una tecla normal
@@ -574,7 +588,7 @@ int main(int argc, char **argv)
     // GLUT_INDEX -> memoria de imagen con color indizado
     // GLUT_RGB -> memoria de imagen con componentes rojo, verde y azul para cada pixel
     // GLUT_RGBA -> memoria de imagen con componentes rojo, verde, azul y alfa para cada pixel
-    // GLUT_DEPTH -> memoria de profundidad o z-bufer
+    // GLUT_DEPTH -> memoria de proDRAWfundidad o z-bufer
     // GLUT_STENCIL -> memoria de estarcido
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 

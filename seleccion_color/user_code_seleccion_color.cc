@@ -135,7 +135,6 @@ void draw_solido_ajedrez(solido *malla, float r1, float g1, float b1, float r2, 
   
 }
 
-
 void draw_seleccion_color(solido *malla, int r, int g, int b)
 {
   
@@ -155,3 +154,4 @@ void draw_seleccion_color(solido *malla, int r, int g, int b)
     }
    glEnd();
 }
+
