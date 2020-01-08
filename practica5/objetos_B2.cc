@@ -101,6 +101,26 @@ for (i=0;i<caras.size();i++){
 glEnd();
 }
 
+
+//*************************************************************************
+// dibujar con seleccion de color
+//*************************************************************************
+
+void _triangulos3D::draw_seleccion_color(float r, float g, float b)
+{
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  glColor3ub(r,g,b);
+  glBegin(GL_TRIANGLES);
+ 
+  for (int i=0;i<caras.size();i++){
+        glVertex3f(vertices[caras[i]._0].x, vertices[caras[i]._0].y, vertices[caras[i]._0].z);
+        glVertex3f(vertices[caras[i]._1].x, vertices[caras[i]._1].y, vertices[caras[i]._1].z);
+        glVertex3f(vertices[caras[i]._2].x, vertices[caras[i]._1].y, vertices[caras[i]._1].z);
+    }
+   glEnd();
+}
+
+
 //*************************************************************************
 // dibujar con distintos modos
 //*************************************************************************
@@ -112,6 +132,7 @@ switch (modo){
 	case EDGES:draw_aristas(r1, g1, b1, grosor);break;
 	case SOLID_CHESS:draw_solido_ajedrez(r1, g1, b1, r2, g2, b2);break;
 	case SOLID:draw_solido(r1, g1, b1);break;
+	case SELECCION:draw_seleccion_color(r1, g1, b1);break;
 	}
 }
 

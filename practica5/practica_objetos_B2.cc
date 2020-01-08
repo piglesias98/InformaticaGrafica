@@ -52,6 +52,19 @@ int flag_giro_pantalla=0;
 
 // _objeto_ply *ply1;
 
+
+//Práctica 5
+//int estadoRaton[3], xc, yc, modo[5], cambio=0;
+
+int Ancho=450, Alto=450;
+float factor=1.0;
+
+void pick_color(int x, int y);
+
+int tipo_camara = 0;
+
+
+
 //**************************************************************************
 //
 //***************************************************************************
@@ -131,6 +144,23 @@ void on_idle(){
 // Funcion para definir la transformación de proyeccion
 //***************************************************************************
 
+/*
+void change_projection()
+{
+
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+
+if (tipo_camara == 0 )
+	//glFrustum(-Size_x,Size_x,-Size_y,Size_y,Front_plane,Back_plane);
+	glFrustum(-Window_width,Window_width,-Window_high,Window_high,Front_plane,Back_plane);
+if (tipo_camara == 1){	//Cambiamos el tipo de cámara con una tecla --> c perspectiva, v paralela
+	glOrtho(-2,2,2,2,-100,100);
+	glScalef(factor, factor,1);
+}
+}
+*/
+
 void change_projection()
 {
 
@@ -141,6 +171,7 @@ glLoadIdentity();
 //  plano_delantero>0  plano_trasero>PlanoDelantero)
 glFrustum(-Size_x,Size_x,-Size_y,Size_y,Front_plane,Back_plane);
 }
+
 
 //**************************************************************************
 // Funcion para definir la transformación*ply1 de vista (posicionar la camara)
@@ -296,6 +327,7 @@ switch (toupper(Tecla1)){
 	case '2':modo=EDGES;break;
 	case '3':modo=SOLID;break;
 	case '4':modo=SOLID_CHESS;break;
+	case '5':modo=SELECCION;break;
         case 'P':t_objeto=PIRAMIDE;break;
         case 'C':t_objeto=CUBO;break;
         case 'O':t_objeto=OBJETO_PLY;break;	
@@ -367,7 +399,24 @@ glutPostRedisplay();
 }
 
 
+/*
+void pick_color(int x, int y)
+{
 
+GLint viewport[4];
+unsigned char pixel[3];
+//si quisieramos leer 100 pixel[100][3]
+glGetIntegerv(GL_VIEWPORT, viewport);	//me olvido y directamente pongo el tamaño grande x,alto
+glReadBuffer(GL_BACK);
+glReadPixels(x,viewport[3]-y,1,1,GL_RGB,GL_UNSIGNED_BYTE,(GLubyte *) &pixel[0]);	//nos lo da el punto en coord de dispositivo
+//podriamos leer varios pixeles, 1,1, --> 100,100
+printf(" valor x %d, valor y %d, color %d, %d, %d \n",x,y,pixel[0],pixel[1],pixel[2]);
+
+procesar_color(pixel);
+glutPostRedisplay();
+}
+
+*/
 
 
 
