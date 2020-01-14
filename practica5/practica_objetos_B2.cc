@@ -14,7 +14,7 @@ using namespace std;
 
 // tipos
 typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION, ARTICULADO} _tipo_objeto;
-_tipo_objeto t_objeto=ARTICULADO;
+_tipo_objeto t_objeto=CUBO;
 _modo   modo=LINEA_SOLIDO;
 
 typedef enum{CONO, ESFERA, CILINDRO} _tipo_rotacion;
@@ -261,36 +261,17 @@ vector<_vertex3f> perfil_rotacion(){
 
 void draw_objects()
 {
-/*
 switch (t_objeto){
 
-	case CUBO: cubo.draw(modo,cubo.r,cubo.g,cubo.b,cubo.g,cubo.r,cubo.b,2);break;
-	case PIRAMIDE: piramide.draw(modo,piramide.r,piramide.g,piramide.b,piramide.g,piramide.r,piramide.b,2);break;
-        case OBJETO_PLY: ply.draw(modo,1.0,0.6,0.0,0.0,1.0,0.3,2);break;
-        case ROTACION:        
-        rotacion.draw(modo,rotacion.r,rotacion.g,rotacion.b,rotacion.g,rotacion.r,rotacion.b,2);break;
+	case CUBO: cubo.draw(modo,cubo.colores, 0.0, 0.0, 0.0, 0.2,  cubo.colores_back, 1, 1, 1);break;
+	case PIRAMIDE: piramide.draw(modo,piramide.colores, 0.0, 0.0, 0.0, 0.2, piramide.colores_back, 1, 1, 1);break;
+        case OBJETO_PLY: ply.draw(modo,ply.colores, 0.0, 0.0, 0.0, 0.2, ply.colores_back, 1, 1, 1);break;
+        case ROTACION:  
+        rotacion.draw(modo,rotacion.colores, 0.0, 0.0, 0.0, 0.2, rotacion.colores_back, 1, 1, 1);break;
         case ARTICULADO:
-        lampara.draw(modo,lampara.r,lampara.g,lampara.b,lampara.g,lampara.r,lampara.b,2);
+        lampara.draw(modo,lampara.colores, 0.0, 0.0, 0.0, 0.2, lampara.colores_back, 1, 1, 1);
         break;
-        
 	}
-	
-*/
-
-switch (t_objeto){
-
-	case CUBO: cubo.draw_solido(cubo.colores);break;
-	case PIRAMIDE: piramide.draw_solido(piramide.colores);break;
-        case OBJETO_PLY: ply.draw_solido(ply.colores);break;
-        case ROTACION:        
-        rotacion.draw_solido(rotacion.colores);break;
-        case ARTICULADO:
-        lampara.draw_solido(lampara.colores);
-        break;
-        
-	}
-
-
 }
 
 
@@ -300,44 +281,23 @@ switch (t_objeto){
 
 void draw_objects_seleccion()
 {
-//da igual 100.0, se pintará con un incremento de 1
-/*
 switch (t_objeto){
 	case CUBO: 
 				//printf("numero de caras: %d", cubo.caras.size());
-				cubo.draw(SELECCION,100.0,100.0,100.0,100.0,100.0,100.0,2);break;
+				cubo.draw(SELECCION,cubo.colores, 0.0, 0.0, 0.0, 0.2,  cubo.colores_back, 1, 1, 1);break;
 	case PIRAMIDE:
 				//printf("numero de caras: %d", piramide.caras.size());
-				piramide.draw(SELECCION,100.0,100.0,100.0,100.0,100.0,100.0,2);break;
+				piramide.draw(SELECCION,piramide.colores, 0.0, 0.0, 0.0, 0.2, piramide.colores_back, 1, 1, 1);break;
         case OBJETO_PLY:
         		//printf("numero de caras: %d", ply.caras.size());
-        		ply.draw(SELECCION,100.0,100.0,100.0,100.0,100.0,100.0,2);break;
+        		ply.draw(SELECCION,ply.colores, 0.0, 0.0, 0.0, 0.2, ply.colores_back, 1, 1, 1);break;
         case ROTACION:        
         		//printf("numero de caras: %d", rotacion.caras.size());
-	        rotacion.draw(SELECCION,100.0,100.0,100.0,100.0,100.0,100.0,2);break;
+	        rotacion.draw(SELECCION,rotacion.colores, 0.0, 0.0, 0.0, 0.2, rotacion.colores_back, 1, 1, 1);break;
         case ARTICULADO:
         		//printf("numero de caras: %d", lampara.caras.size());
-	        lampara.draw(SELECCION,100.0,100.0,100.0,100.0,100.0,100.0,2);break;
-        
-	}
-*/
-
-switch (t_objeto){
-	case CUBO: 
-				//printf("numero de caras: %d", cubo.caras.size());
-				cubo.draw_seleccion_color(cubo.colores_back);break;
-	case PIRAMIDE:
-				//printf("numero de caras: %d", piramide.caras.size());
-				piramide.draw_seleccion_color(piramide.colores_back);break;
-        case OBJETO_PLY:
-        		//printf("numero de caras: %d", ply.caras.size());
-        		ply.draw_seleccion_color(ply.colores_back);break;
-        case ROTACION:        
-        		//printf("numero de caras: %d", rotacion.caras.size());
-	        rotacion.draw_seleccion_color(rotacion.colores_back);break;
-        case ARTICULADO:
-        		//printf("numero de caras: %d", lampara.caras.size());
-	        lampara.draw_seleccion_color(lampara.colores_back);break;
+	        lampara.draw(SELECCION,lampara.colores, 0.0, 0.0, 0.0, 0.2, lampara.colores_back, 1, 1, 1);break;
+	        break;
         
 	}
 
@@ -434,7 +394,7 @@ glutPostRedisplay();
 }
 
 //***************************************************************************
-// Funcion l-olamada cuando se aprieta una tecla especial
+// Funcion llamada cuando se aprieta una tecla especial
 //
 // el evento manda a la funcion:
 // codigo de la tecla
@@ -509,13 +469,19 @@ switch (t_objeto){
 }
 */ 
 switch (t_objeto){
-	case CUBO: cubo.determinar_triangulo(color[0],color[1],color[2]);break;
-	case PIRAMIDE: piramide.determinar_triangulo(color[0],color[1],color[2]);break;
-		  case OBJETO_PLY: ply.determinar_triangulo(color[0],color[1],color[2]);break;
-		  case ROTACION:        
-		  rotacion.determinar_triangulo(color[0],color[1],color[2]);break;
-		  case ARTICULADO:
-		  lampara.determinar_triangulo(color[0],color[1],color[2]);break;
+	case CUBO: cubo.draw(DETERMINAR,cubo.colores, 0.0, 0.0, 0.0, 0.2,  cubo.colores_back, color[0], color[1], color[2]);break;
+	case PIRAMIDE:
+			piramide.draw(DETERMINAR,piramide.colores, 0.0, 0.0, 0.0, 0.2,  piramide.colores_back, color[0], color[1], color[2]);
+			break;
+  case OBJETO_PLY:
+  			ply.draw(DETERMINAR,ply.colores, 0.0, 0.0, 0.0, 0.2,  ply.colores_back, color[0], color[1], color[2]);
+  			break;
+  case ROTACION:        
+  			rotacion.draw(DETERMINAR,rotacion.colores, 0.0, 0.0, 0.0, 0.2,  rotacion.colores_back, color[0], color[1], color[2]);
+  			break;
+  case ARTICULADO:
+		  lampara.draw(DETERMINAR,lampara.colores, 0.0, 0.0, 0.0, 0.2,  lampara.colores_back, color[0], color[1], color[2]);
+		  break;
 
               
 }

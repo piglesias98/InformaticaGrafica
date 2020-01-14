@@ -9,7 +9,7 @@
 
 
 const float AXIS_SIZE=5000;
-typedef enum{POINTS,EDGES,SOLID_CHESS,SOLID, LINEA_SOLIDO, SELECCION, PINTAR_TRIANGULO} _modo;
+typedef enum{POINTS,EDGES,SOLID_CHESS,SOLID, LINEA_SOLIDO, SELECCION, PINTAR_TRIANGULO, DETERMINAR} _modo;
 
 //*************************************************************************
 // clase punto
@@ -41,9 +41,9 @@ public:
 void 	determinar_triangulo(int p_r, int p_g, int p_b);
 void 	draw_aristas(float r, float g, float b, int grosor);
 void  draw_solido(vector<vector<float>> los_colores);
-void 	draw_solido_ajedrez(float r1, float g1, float b1, float r2, float g2, float b2);
+void 	draw_solido_ajedrez(vector<vector<float>> los_colores, float r2, float g2, float b2);
 void  draw_seleccion_color(vector<vector<int>> los_colores);
-void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+void 	draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, float b2, float grosor, vector<vector<int>> los_colores_back, int r3, int g3, int b3);
 
 
 vector<_vertex3i> caras;
@@ -111,7 +111,7 @@ class _pantalla: public _triangulos3D
 {
 public:
        _pantalla();
-void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+void 	draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, float b2, float grosor, vector<vector<int>> los_colores_back, int r3, int g3, int b3);
 float altura;
 
 protected:
@@ -124,7 +124,7 @@ class _bombilla: public _triangulos3D
 {
 public:
        _bombilla();
-void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+void 	draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, float b2, float grosor, vector<vector<int>> los_colores_back, int r3, int g3, int b3);
 float altura;
 
 protected:
@@ -138,7 +138,7 @@ class _brazo: public _triangulos3D
 {
 public:
        _brazo();
-void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+void 	draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, float b2, float grosor, vector<vector<int>> los_colores_back, int r3, int g3, int b3);
 float altura;
 
 protected:
@@ -152,7 +152,7 @@ class _base: public _triangulos3D
 {
 public:
        _base();
-void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+void 	draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, float b2, float grosor, vector<vector<int>> los_colores_back, int r3, int g3, int b3);
 float altura;
 
 protected:
@@ -166,7 +166,7 @@ class _lampara: public _triangulos3D
 {
 public:
        _lampara();
-void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+void 	draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, float b2, float grosor, vector<vector<int>> los_colores_back, int r3, int g3, int b3);
 
 float giro_brazo_inf;
 float giro_brazo_sup;

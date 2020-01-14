@@ -84,16 +84,16 @@ for (i=0;i<caras.size();i++){
 // dibujar en modo sólido con apariencia de ajedrez
 //*************************************************************************
 
-void _triangulos3D::draw_solido_ajedrez(float r1, float g1, float b1, float r2, float g2, float b2)
+void _triangulos3D::draw_solido_ajedrez(vector<vector<float>> los_colores, float r2, float g2, float b2)
 {
 int i;
 glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 //glLineWidth(grosor);
-glColor3f(r1,g2,b2);
+glColor3f(r2,g2,b2);
 glBegin(GL_TRIANGLES);
 for (i=0;i<caras.size();i++){
 	if (i%2==0) glColor3f(r2,g2,b2);
-	else glColor3f(r1,g2,b2);
+	else glColor3f(los_colores[i][0],los_colores[i][1],los_colores[i][2]);
 	glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
 	glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
 	glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
@@ -216,18 +216,20 @@ void _triangulos3D::determinar_triangulo(int p_r, int p_g, int p_b)
 // dibujar con distintos modos
 //*************************************************************************
 
-void _triangulos3D::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
+void _triangulos3D::draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, float b2, float grosor, vector<vector<int>> los_colores_back, int r3, int g3, int b3)
 {
 switch (modo){
-	case POINTS:draw_puntos(r1, g1, b1, grosor);break;
-	case EDGES:draw_aristas(r1, g1, b1, grosor);break;
-	case SOLID_CHESS:draw_solido_ajedrez(r1, g1, b1, r2, g2, b2);break;
-	case SOLID:draw_solido(colores);break;
+	case POINTS:draw_puntos(r2, g2, b2, grosor);break;
+	case EDGES:draw_aristas(r2,g2,b2, grosor);break;
+	case SOLID_CHESS:draw_solido_ajedrez(los_colores, r2, g2, b2);break;
+	case SOLID:draw_solido(los_colores);break;
 	case LINEA_SOLIDO:
 		draw_aristas(0.1,0.1,0.1, grosor);	//pintamos las líneas
-		draw_solido(colores);break;	//pintamos el relleno	
+		draw_solido(los_colores);break;	//pintamos el relleno	
 	case SELECCION:
-		draw_seleccion_color(colores_back);break;
+		draw_seleccion_color(los_colores_back);break;
+	case DETERMINAR:
+		determinar_triangulo(r3, g3, b3);break;
 	}
 }
 
@@ -280,7 +282,7 @@ vertices[7].z = 0;
 caras.resize(12);
 for (int i = 0; i<caras.size(); i++){
 	colores.push_back({1.0,0.0,0.0});
-	colores_back.push_back({100+i*10,100+i*10,100+i*10});
+	colores_back.push_back({i,i,i});
 }
 
 
@@ -558,11 +560,11 @@ bom.parametros(perfil_bombilla, 12, 1);
 
 }
 
-void _bombilla::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
+void _bombilla::draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, float b2, float grosor, vector<vector<int>> los_colores_back, int r3, int g3, int b3)
 {
 glPushMatrix();
 glScalef(0.3,0.3,0.3);
-bom.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+bom.draw(modo, bom.colores, r2, g2, b2, grosor, bom.colores_back, r3, g3, b3);
 glPopMatrix();
 }
 
@@ -598,11 +600,11 @@ pan.parametros(perfil,12,0);
 }
 
 
-void _pantalla::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
+void _pantalla::draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, float b2, float grosor, vector<vector<int>> los_colores_back, int r3, int g3, int b3)
 {
 glPushMatrix();
 //glScalef(1.0,0.22,0.95);
-pan.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+pan.draw(modo, pan.colores, r2, g2, b2, grosor, pan.colores_back, r3, g3, b3);
 glPopMatrix();
 }
 
@@ -624,11 +626,11 @@ br.parametros(perfil,12,0);
 }
 
 
-void _brazo::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
+void _brazo::draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, float b2, float grosor, vector<vector<int>> los_colores_back, int r3, int g3, int b3)
 {
 glPushMatrix();
 //glScalef(1.0,0.22,0.95);
-br.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+br.draw(modo, br.colores, r2, g2, b2, grosor, br.colores_back, r3, g3, b3);
 glPopMatrix();
 }
 
@@ -651,11 +653,11 @@ bas.parametros(perfil,12,0);
 }
 
 
-void _base::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
+void _base::draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, float b2, float grosor, vector<vector<int>> los_colores_back, int r3, int g3, int b3)
 {
 glPushMatrix();
 //glScalef(1.0,0.22,0.95);
-bas.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+bas.draw(modo, bas.colores, r2, g2, b2, grosor, bas.colores_back, r3, g3, b3);
 glPopMatrix();
 }
 
@@ -681,30 +683,32 @@ giro_brazo_inf_max=30.0;
 giro_brazo_sup_max=45.0;
 giro_pantalla_max=90.0;
 
+
+
 }
 
-void _lampara::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
+void _lampara::draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, float b2, float grosor, vector<vector<int>> los_colores_back, int r3, int g3, int b3)
 {
 glPushMatrix();
 	glTranslatef(0.0,traslacion_y,0.0);
 	glTranslatef(traslacion_x,0.0,0.0);
-	base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	base.draw(modo, base.colores, r2, g2, b2, grosor, base.colores_back, r3, g3, b3);
 	glTranslatef(0.0,base.altura,0.0);
 	glRotatef(giro_brazo_inf,0,0,1);
-	brazo_inf.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	brazo_inf.draw(modo, brazo_inf.colores, r2, g2, b2, grosor, brazo_inf.colores_back, r3, g3, b3);
 	glPushMatrix();
 		glTranslatef(0.0,brazo_inf.altura,0.0);
 		glRotatef(giro_brazo_sup,0,0,1);
-		brazo_sup.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+		brazo_sup.draw(modo, brazo_sup.colores, r2, g2, b2, grosor, brazo_sup.colores_back, r3, g3, b3);
 		glPushMatrix();
 			glTranslatef(0.0,brazo_sup.altura,0.0);
 			glRotatef(giro_pantalla,0,0,1);
 				glPushMatrix();
 					glTranslatef(0.0,2* pantalla.altura/3,0.0);
-					bombilla.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+					bombilla.draw(modo, bombilla.colores, r2, g2, b2, grosor, bombilla.colores_back, r3, g3, b3);
 				glPopMatrix();
 				glPushMatrix();	
-					pantalla.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+					pantalla.draw(modo, bombilla.colores, r2, g2, b2, grosor, bombilla.colores_back, r3, g3, b3);
 				glPopMatrix();
 
 		glPopMatrix();
