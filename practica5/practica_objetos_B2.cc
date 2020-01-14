@@ -37,11 +37,8 @@ _cubo cubo;
 _piramide piramide(0.85,1.3);
 _objeto_ply  ply; 
 _rotacion rotacion; 
-_pantalla pantalla;
-_brazo brazo;
-_base base;
 _lampara lampara;
-_bombilla bombilla;
+
 
 
 
@@ -147,23 +144,7 @@ void on_idle(){
 // Funcion para definir la transformación de proyeccion
 //***************************************************************************
 
-/*
-void change_projection()
-{
 
-glMatrixMode(GL_PROJECTION);
-glLoadIdentity();
-
-if (tipo_camara == 0 )
-	//glFrustum(-Size_x,Size_x,-Size_y,Size_y,Front_plane,Back_plane);
-	glFrustum(-Size_x,Size_x,-Size_y,Size_y,Front_plane,Back_plane);
-if (tipo_camara == 1){	//Cambiamos el tipo de cámara con una tecla --> c perspectiva, v paralela
-	glOrtho(-2,2,2,2,-100,100);
-	glScalef(factor, factor,1);
-}
-}
-
-*/
 void change_projection()
 {
 
@@ -443,31 +424,7 @@ glutPostRedisplay();
 
 
 void procesar_color(unsigned char color[3])
-{
-/*
-if(cambio==1){
-	r=1.0;
-	g=0.0;
-	b=0.0;
-	cambio=0;
-}else{
-	r=1.0;
-	g=1.0;
-	b=0.0;
-	cambio=1;
-}
-
-switch (t_objeto){
-	case CUBO: cubo.draw(modo,r,g,b,r,g,b,2);break;
-	case PIRAMIDE: piramide.draw(modo,r,g,b,r,g,b,2);break;
-		  case OBJETO_PLY: ply.draw(modo,r,g,b,r,g,b,2);break;
-		  case ROTACION:        
-		  rotacion.draw(modo,r,g,b,r,g,b,2);break;
-		  case ARTICULADO:
-		  printf("entra aqui");
-		  lampara.draw(modo,r,g,b,r,g,b,2);break;    
-}
-*/ 
+{ 
 switch (t_objeto){
 	case CUBO: cubo.draw(DETERMINAR,cubo.colores, 0.0, 0.0, 0.0, 0.2,  cubo.colores_back, color[0], color[1], color[2]);break;
 	case PIRAMIDE:
@@ -608,20 +565,7 @@ glViewport(0,0,Window_width,Window_high);
 
 int main(int argc, char *argv[] )
 {
-/*
-vector<_vertex3f> perfil2;
-_vertex3f aux;
 
-aux.x=1.0; aux.y=-1.0; aux.z=0.0;
-perfil2.push_back(aux);
-aux.x=1.0; aux.y=1.0; aux.z=0.0;
-perfil2.push_back(aux);
-*/
-/*
-vector<_vertex3f> perfil2;
-perfil2={  {1.0,1.0,0.0},
-            {1.0,-1.0,0.0}};
-*/
 rotacion.eliminar();
 rotacion.parametros(perfil_rotacion(),20,0);
 // se llama a la inicialización de glut

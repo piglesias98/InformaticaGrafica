@@ -6,6 +6,8 @@
 #include "file_ply_stl.hpp"
 
 
+
+
 //*************************************************************************
 // _puntos3D
 //*************************************************************************
@@ -35,8 +37,10 @@ glEnd();
 // _triangulos3D
 //*************************************************************************
 
+
 _triangulos3D::_triangulos3D()
 {
+
 }
 
 
@@ -119,31 +123,6 @@ for (i=0;i<caras.size();i++){
 	glEnd();
 	}
 
-
-	/*
-	//printf("LLAMADA A DRAW SELECCION COLOR");
-	int r=0, g=0, b=0;
-	for (int i=0;i<caras.size();i++){
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		r+=incremento;
-		g+=incremento;
-		b+=incremento;
-		colores.push_back({r, g, b});	//añado ese color al vector de colores
-		//printf("colores %d = %d, %d= %d, %d= %d", colores[i][0], r, colores[i][1], g, colores[i][2], b); 
-		this->back_r=(float)r;
-		//printf("back_r %d", back_r);
-		this->back_g=g;
-		this->back_b=b;
-		//printf("colores %d = %d, %d= %d, %d= %d", colores[i][0], r, colores[i][1], g, colores[i][2], b); 
-		glColor3ub(r,g,b);
-		//printf("el color es ahora r %d, g %d, b %d", r, g, b);
-		glBegin(GL_TRIANGLES);
-		glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
-		glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
-		glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
-		glEnd();
-	}
-	*/
    
 }
 
@@ -154,38 +133,7 @@ for (i=0;i<caras.size();i++){
 
 void _triangulos3D::determinar_triangulo(int p_r, int p_g, int p_b)
 {
-	/*
-	printf("colores size() %d", colores.size());
-	int cara=-1;
-	printf("r %d, g %d, b %d= ", p_r, p_g, p_b);
-	printf("caras.size() %d", caras.size() );
-		for (int i=0; i<caras.size(); i++){
-			printf("colores[i][0] %d, colores[i][0] %d, colores[i][0] %d", colores[i][0], colores[i][1], colores[i][2]);
-			if (colores[i][0] == p_r && colores[i][1] == p_g && colores[i][2] == p_b){
-				cara = i;
-			}
-		}
-		if (cara!=-1){
-			printf("cara =! -1");
-			//pintamos el triángulo de amarillo
-			r=1.0;
-			g=1.0;
-			b=0.0;
-		}
-		
-	printf("back_r %d", this->back_r);
-   if (p_r ==back_r){
-   	printf("es_igual");
-   }
-   
-   glColor3ub(0.0,1.0,0.0);
-		//printf("el color es ahora r %d, g %d, b %d", r, g, b);
-		glBegin(GL_TRIANGLES);
-		glVertex3fv((GLfloat *) &vertices[caras[0]._0]);
-		glVertex3fv((GLfloat *) &vertices[caras[0]._1]);
-		glVertex3fv((GLfloat *) &vertices[caras[0]._2]);
-		glEnd();
-	*/
+	
 	int cara = -1;
 	for (int i=0; i<caras.size(); i++){
 		if (colores_back[i][0]==p_r && colores_back[i][1]==p_g && colores_back[i][2]==p_b){
@@ -237,7 +185,7 @@ switch (modo){
 // clase cubo
 //*************************************************************************
 
-_cubo::_cubo(float tam)
+_cubo::_cubo(float tam, int ini)
 {
 //vertices
 
@@ -279,10 +227,19 @@ vertices[7].z = 0;
 //tendría doce caras
 //resize 12
 
+
+
+
 caras.resize(12);
 for (int i = 0; i<caras.size(); i++){
 	colores.push_back({1.0,0.0,0.0});
-	colores_back.push_back({i,i,i});
+}
+
+for (int i=ini; i<caras.size()+ini; i++){
+	int r = (i/256)/256;
+	int g = (i/256)%256;
+	int b = (i%256);
+	colores_back.push_back({r,g,b});
 }
 
 
@@ -342,7 +299,7 @@ caras[11]._2=1;
 // clase piramide
 //*************************************************************************
 
-_piramide::_piramide(float tam, float al)
+_piramide::_piramide(float tam, float al, int ini)
 {
 
 //vertices 
@@ -357,8 +314,15 @@ caras.resize(6);
 
 for (int i = 0; i<caras.size(); i++){
 	colores.push_back({1.0,0.0,0.0});
-	colores_back.push_back({i,i,i});
 }
+
+for (int i=ini; i<caras.size()+ini; i++){
+	int r = (i/256)/256;
+	int g = (i/256)%256;
+	int b = (i%256);
+	colores_back.push_back({r,g,b});
+}
+
 
 caras[0]._0=0;caras[0]._1=1;caras[0]._2=4;
 caras[1]._0=1;caras[1]._1=2;caras[1]._2=4;
@@ -367,6 +331,7 @@ caras[3]._0=3;caras[3]._1=0;caras[3]._2=4;
 caras[4]._0=3;caras[4]._1=1;caras[4]._2=0;
 caras[5]._0=3;caras[5]._1=2;caras[5]._2=1;
 }
+
 
 //*************************************************************************
 // clase objeto ply
@@ -417,9 +382,15 @@ for(int i = 0; i < n_car; i++){
   }
 
 
-for (int i = 0; i<caras.size(); i++){
+for (int i = 0; i<caras.size(); i+=3){
 	colores.push_back({1.0,0.0,0.0});
-	colores_back.push_back({i,i,i});
+}
+
+for (int i=0; i<caras.size(); i++){
+	int r = (i/256)/256;
+	int g = (i/256)%256;
+	int b = (i%256);
+	colores_back.push_back({r,g,b});
 }
 
 return(0);
@@ -436,13 +407,13 @@ _rotacion::_rotacion()
 }
 
 
-void _rotacion::parametros(vector<_vertex3f> perfil, int num, int tipo)
+void _rotacion::parametros(vector<_vertex3f> perfil, int num, int tipo, int a)
 {	
 int i,j;
 _vertex3f vertice_aux;
 _vertex3i cara_aux;
 int num_aux;
-
+ini=a;
 // tratamiento de los vértices
 
 
@@ -524,9 +495,14 @@ if (fabs(perfil[0].x)>0.0)
   
   for (int i = 0; i<caras.size(); i++){
 	colores.push_back({1.0,0.0,0.0});
-	colores_back.push_back({i,i,i});
 	}
-  
+
+	for (int i=ini; i<ini+caras.size(); i++){
+		int r = (i/256)/256;
+		int g = (i/256)%256;
+		int b = (i%256);
+		colores_back.push_back({r,g,b});
+	}
 }
 
 	void _rotacion::eliminar(){
@@ -541,12 +517,12 @@ if (fabs(perfil[0].x)>0.0)
 
 //************************************************************************
 
-_bombilla::_bombilla()
+_bombilla::_bombilla(int i)
 {
 
 //perfil bombilla
 // perfil pantalla
-
+ini=i;
 vector<_vertex3f> perfil_bombilla;
 _vertex3f aux_bombilla;
 for (int i =1; i<12; i++){
@@ -556,7 +532,7 @@ for (int i =1; i<12; i++){
 		perfil_bombilla.push_back(aux_bombilla);
 	}
 
-bom.parametros(perfil_bombilla, 12, 1);
+bom.parametros(perfil_bombilla, 12, 1, ini);
 
 }
 
@@ -570,9 +546,9 @@ glPopMatrix();
 
 //************************************************************************
 
-_pantalla::_pantalla()
+_pantalla::_pantalla(int i)
 {
-
+ini = i;
 altura = 1.0;
 
 // perfil pantalla
@@ -595,7 +571,7 @@ perfil.push_back(aux);
 aux.x=0.2;aux.y=0.3;aux.z=0.0;
 perfil.push_back(aux);
 
-pan.parametros(perfil,12,0);
+pan.parametros(perfil,12,0, ini);
 
 }
 
@@ -611,9 +587,10 @@ glPopMatrix();
 //************************************************************************
 
 
-_brazo::_brazo()
+_brazo::_brazo(int i)
 {
 altura = 2.0;
+ini = i;
 // perfil para un cilindro
 vector<_vertex3f> perfil;
 _vertex3f aux;
@@ -621,7 +598,7 @@ aux.x=0.2;aux.y=0.0;aux.z=0.0;
 perfil.push_back(aux);
 aux.x=0.2;aux.y=2.0;aux.z=0.0;
 perfil.push_back(aux);
-br.parametros(perfil,12,0);
+br.parametros(perfil,12,0, ini);
 
 }
 
@@ -638,8 +615,10 @@ glPopMatrix();
 //************************************************************************
 
 
-_base::_base()
+_base::_base(int i)
 {
+ini =i;
+printf("ini base %d",ini);
 altura = 0.3;
 // perfil para un cilindro
 vector<_vertex3f> perfil;
@@ -648,7 +627,7 @@ aux.x=1.0;aux.y=0.0;aux.z=0.0;
 perfil.push_back(aux);
 aux.x=1.0;aux.y=0.3;aux.z=0.0;
 perfil.push_back(aux);
-bas.parametros(perfil,12,0);
+bas.parametros(perfil,12,0, ini);
 
 }
 
@@ -656,7 +635,6 @@ bas.parametros(perfil,12,0);
 void _base::draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, float b2, float grosor, vector<vector<int>> los_colores_back, int r3, int g3, int b3)
 {
 glPushMatrix();
-//glScalef(1.0,0.22,0.95);
 bas.draw(modo, bas.colores, r2, g2, b2, grosor, bas.colores_back, r3, g3, b3);
 glPopMatrix();
 }
@@ -683,6 +661,9 @@ giro_brazo_inf_max=30.0;
 giro_brazo_sup_max=45.0;
 giro_pantalla_max=90.0;
 
+//pantalla(0);
+//brazo_sup(pantalla.pan.caras.size());
+
 
 
 }
@@ -708,7 +689,7 @@ glPushMatrix();
 					bombilla.draw(modo, bombilla.colores, r2, g2, b2, grosor, bombilla.colores_back, r3, g3, b3);
 				glPopMatrix();
 				glPushMatrix();	
-					pantalla.draw(modo, bombilla.colores, r2, g2, b2, grosor, bombilla.colores_back, r3, g3, b3);
+					pantalla.draw(modo, pantalla.colores, r2, g2, b2, grosor, pantalla.colores_back, r3, g3, b3);
 				glPopMatrix();
 
 		glPopMatrix();

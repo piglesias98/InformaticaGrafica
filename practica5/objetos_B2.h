@@ -49,6 +49,8 @@ void 	draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, fl
 vector<_vertex3i> caras;
 vector<vector<float>> colores;
 vector<vector<int>> colores_back;
+
+static vector<vector<int>> todos_los_colores;
 };
 
 
@@ -60,7 +62,7 @@ class _cubo: public _triangulos3D
 {
 public:
 
-	_cubo(float tam=0.5);
+	_cubo(float tam=0.5, int ini=0);
 };
 
 
@@ -72,7 +74,7 @@ class _piramide: public _triangulos3D
 {
 public:
 
-	_piramide(float tam=0.5, float al=0.75);
+	_piramide(float tam=0.5, float al=0.75, int ini=0);
 };
 
 //*************************************************************************
@@ -95,11 +97,12 @@ class _rotacion: public _triangulos3D
 {
 public:
        _rotacion();
-void  parametros(vector<_vertex3f> perfil1, int num1, int tipo);
+void  parametros(vector<_vertex3f> perfil1, int num1, int tipo, int a=0);
 void eliminar();
 
 vector<_vertex3f> perfil; 
 int num;
+int ini;
 };
 
 
@@ -110,12 +113,13 @@ int num;
 class _pantalla: public _triangulos3D
 {
 public:
-       _pantalla();
+       _pantalla(int i=120);
 void 	draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, float b2, float grosor, vector<vector<int>> los_colores_back, int r3, int g3, int b3);
 float altura;
 
-protected:
+//protected:
 _rotacion  pan;
+int ini;
 };
 
 //************************************************************************
@@ -123,12 +127,13 @@ _rotacion  pan;
 class _bombilla: public _triangulos3D
 {
 public:
-       _bombilla();
+       _bombilla(int i=80);
 void 	draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, float b2, float grosor, vector<vector<int>> los_colores_back, int r3, int g3, int b3);
 float altura;
 
-protected:
+//protected:
 _rotacion  bom;
+int ini;
 };
 
 
@@ -137,12 +142,13 @@ _rotacion  bom;
 class _brazo: public _triangulos3D
 {
 public:
-       _brazo();
+       _brazo(int i=40);
 void 	draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, float b2, float grosor, vector<vector<int>> los_colores_back, int r3, int g3, int b3);
 float altura;
 
-protected:
+//protected:
 _rotacion  br;
+int ini;
 };
 
 //************************************************************************
@@ -151,12 +157,14 @@ _rotacion  br;
 class _base: public _triangulos3D
 {
 public:
-       _base();
+       _base(int i=0);
 void 	draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, float b2, float grosor, vector<vector<int>> los_colores_back, int r3, int g3, int b3);
 float altura;
 
-protected:
+
+//protected:
 _rotacion  bas;
+int ini;
 };
 
 
@@ -183,11 +191,14 @@ float giro_pantalla_max;
 
 
 protected:
-_pantalla pantalla;
-_brazo brazo_sup;
-_brazo brazo_inf;
-_base base;
-_bombilla bombilla;
+
+_pantalla pantalla{0};
+_brazo brazo_sup{pantalla.pan.caras.size()};
+_brazo brazo_inf{brazo_sup.ini + brazo_sup.br.caras.size()};
+_base base{brazo_inf.ini + brazo_inf.br.caras.size()};
+_bombilla bombilla{base.ini + base.bas.caras.size()};
+
+
 };
 
 
