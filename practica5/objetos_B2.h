@@ -9,7 +9,7 @@
 
 
 const float AXIS_SIZE=5000;
-typedef enum{POINTS,EDGES,SOLID_CHESS,SOLID, LINEA_SOLIDO, SELECCION} _modo;
+typedef enum{POINTS,EDGES,SOLID_CHESS,SOLID, LINEA_SOLIDO, SELECCION, PINTAR_TRIANGULO} _modo;
 
 //*************************************************************************
 // clase punto
@@ -32,17 +32,23 @@ vector<_vertex3f> vertices;
 
 class _triangulos3D: public _puntos3D
 {
+
+
 public:
 
 	_triangulos3D();
+//void set_color(float r, float g, float b);
+void 	determinar_triangulo(int p_r, int p_g, int p_b);
 void 	draw_aristas(float r, float g, float b, int grosor);
-void  draw_solido(float r, float g, float b);
+void  draw_solido(vector<vector<float>> los_colores);
 void 	draw_solido_ajedrez(float r1, float g1, float b1, float r2, float g2, float b2);
-void  draw_seleccion_color(int r, int g, int b);
+void  draw_seleccion_color(vector<vector<int>> los_colores);
 void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
 
 
 vector<_vertex3i> caras;
+vector<vector<float>> colores;
+vector<vector<int>> colores_back;
 };
 
 

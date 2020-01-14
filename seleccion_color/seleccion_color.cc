@@ -221,7 +221,7 @@ void draw_objects()
 }
 
 //**************************************************************************
-// Funcion que dibuja los objetos en el buffer trasero
+// Funcin que dibuja los objetos en el buffer trasero
 //***************************************************************************
 
 

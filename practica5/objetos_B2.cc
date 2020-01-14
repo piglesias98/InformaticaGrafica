@@ -59,25 +59,25 @@ for (i=0;i<caras.size();i++){
 glEnd();
 }
 
+
+
+
 //*************************************************************************
 // dibujar en modo sólido
 //*************************************************************************
 
-void _triangulos3D::draw_solido(float r, float g, float b)
+void _triangulos3D::draw_solido(vector<vector<float>> los_colores)
 {
-
 int i;
-glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-//glLineWidth(grosor);
-glColor3f(r,g,b);
-glBegin(GL_TRIANGLES);
 for (i=0;i<caras.size();i++){
+	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+	glColor3f(los_colores[i][0],los_colores[i][1],los_colores[i][2]);
+	glBegin(GL_TRIANGLES);
 	glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
 	glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
 	glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+	glEnd();
 	}
-glEnd();
-
 }
 
 //*************************************************************************
@@ -106,20 +106,110 @@ glEnd();
 // dibujar con seleccion de color
 //*************************************************************************
 
-void _triangulos3D::draw_seleccion_color(int r, int g, int b)
+void _triangulos3D::draw_seleccion_color(vector<vector<int>> los_colores)
 {
-	int i;
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-  glColor3ub(r,g,b);
-  glBegin(GL_TRIANGLES);
- 
-  for (i=0;i<caras.size();i++){
-        glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
-        glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
-        glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
-    }
-   glEnd();
+int i;
+for (i=0;i<caras.size();i++){
+	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+	glColor3ub(los_colores[i][0],los_colores[i][1],los_colores[i][2]);
+	glBegin(GL_TRIANGLES);
+	glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
+	glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+	glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+	glEnd();
+	}
+
+
+	/*
+	//printf("LLAMADA A DRAW SELECCION COLOR");
+	int r=0, g=0, b=0;
+	for (int i=0;i<caras.size();i++){
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		r+=incremento;
+		g+=incremento;
+		b+=incremento;
+		colores.push_back({r, g, b});	//añado ese color al vector de colores
+		//printf("colores %d = %d, %d= %d, %d= %d", colores[i][0], r, colores[i][1], g, colores[i][2], b); 
+		this->back_r=(float)r;
+		//printf("back_r %d", back_r);
+		this->back_g=g;
+		this->back_b=b;
+		//printf("colores %d = %d, %d= %d, %d= %d", colores[i][0], r, colores[i][1], g, colores[i][2], b); 
+		glColor3ub(r,g,b);
+		//printf("el color es ahora r %d, g %d, b %d", r, g, b);
+		glBegin(GL_TRIANGLES);
+		glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
+		glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+		glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+		glEnd();
+	}
+	*/
+   
 }
+
+
+//*************************************************************************
+// dibujar el triangulo seleccionado
+//*************************************************************************
+
+void _triangulos3D::determinar_triangulo(int p_r, int p_g, int p_b)
+{
+	/*
+	printf("colores size() %d", colores.size());
+	int cara=-1;
+	printf("r %d, g %d, b %d= ", p_r, p_g, p_b);
+	printf("caras.size() %d", caras.size() );
+		for (int i=0; i<caras.size(); i++){
+			printf("colores[i][0] %d, colores[i][0] %d, colores[i][0] %d", colores[i][0], colores[i][1], colores[i][2]);
+			if (colores[i][0] == p_r && colores[i][1] == p_g && colores[i][2] == p_b){
+				cara = i;
+			}
+		}
+		if (cara!=-1){
+			printf("cara =! -1");
+			//pintamos el triángulo de amarillo
+			r=1.0;
+			g=1.0;
+			b=0.0;
+		}
+		
+	printf("back_r %d", this->back_r);
+   if (p_r ==back_r){
+   	printf("es_igual");
+   }
+   
+   glColor3ub(0.0,1.0,0.0);
+		//printf("el color es ahora r %d, g %d, b %d", r, g, b);
+		glBegin(GL_TRIANGLES);
+		glVertex3fv((GLfloat *) &vertices[caras[0]._0]);
+		glVertex3fv((GLfloat *) &vertices[caras[0]._1]);
+		glVertex3fv((GLfloat *) &vertices[caras[0]._2]);
+		glEnd();
+	*/
+	int cara = -1;
+	for (int i=0; i<caras.size(); i++){
+		if (colores_back[i][0]==p_r && colores_back[i][1]==p_g && colores_back[i][2]==p_b){
+			cara=i;
+		}
+	}
+	
+	if (cara!=-1){
+		if (colores[cara][0] == 1.0 && colores[cara][1] == 0.0){	//si era rojo lo ponemos amarillo
+			colores[cara][0]=1.0;
+			colores[cara][1]=1.0;
+			colores[cara][2]=0.0;
+		}else{								//si no era rojo lo volvemos a poner a rojo
+			colores[cara][0]=1.0;
+			colores[cara][1]=0.0;
+			colores[cara][2]=0.0;
+	}
+	}
+	
+	
+	
+}
+
+
 
 
 //*************************************************************************
@@ -132,12 +222,12 @@ switch (modo){
 	case POINTS:draw_puntos(r1, g1, b1, grosor);break;
 	case EDGES:draw_aristas(r1, g1, b1, grosor);break;
 	case SOLID_CHESS:draw_solido_ajedrez(r1, g1, b1, r2, g2, b2);break;
-	case SOLID:draw_solido(r1, g1, b1);break;
+	case SOLID:draw_solido(colores);break;
 	case LINEA_SOLIDO:
 		draw_aristas(0.1,0.1,0.1, grosor);	//pintamos las líneas
-		draw_solido(r1, g1, b1);break;	//pintamos el relleno	
+		draw_solido(colores);break;	//pintamos el relleno	
 	case SELECCION:
-		draw_seleccion_color(int(r1), int(g1), int(b1));break;
+		draw_seleccion_color(colores_back);break;
 	}
 }
 
@@ -188,6 +278,11 @@ vertices[7].z = 0;
 //resize 12
 
 caras.resize(12);
+for (int i = 0; i<caras.size(); i++){
+	colores.push_back({1.0,0.0,0.0});
+	colores_back.push_back({100+i*10,100+i*10,100+i*10});
+}
+
 
 caras[0]._0=0;
 caras[0]._1=1;
@@ -257,6 +352,12 @@ vertices[3].x=-tam;vertices[3].y=0;vertices[3].z=-tam;
 vertices[4].x=0;vertices[4].y=al;vertices[4].z=0;
 
 caras.resize(6);
+
+for (int i = 0; i<caras.size(); i++){
+	colores.push_back({1.0,0.0,0.0});
+	colores_back.push_back({i,i,i});
+}
+
 caras[0]._0=0;caras[0]._1=1;caras[0]._2=4;
 caras[1]._0=1;caras[1]._1=2;caras[1]._2=4;
 caras[2]._0=2;caras[2]._1=3;caras[2]._2=4;
@@ -313,6 +414,11 @@ for(int i = 0; i < n_car; i++){
     caras.push_back(cara_aux);
   }
 
+
+for (int i = 0; i<caras.size(); i++){
+	colores.push_back({1.0,0.0,0.0});
+	colores_back.push_back({i,i,i});
+}
 
 return(0);
 }
@@ -413,6 +519,11 @@ if (fabs(perfil[0].x)>0.0)
      	}
   
   }
+  
+  for (int i = 0; i<caras.size(); i++){
+	colores.push_back({1.0,0.0,0.0});
+	colores_back.push_back({i,i,i});
+	}
   
 }
 
