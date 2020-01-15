@@ -556,14 +556,16 @@ glutPostRedisplay();
 void procesar_color(unsigned char color[3])
 {
 switch (t_objeto){
-	case CUBO: cubo.draw(DETERMINAR,cubo.colores, 0.0, 0.0, 0.0, 0.2,  cubo.colores_back, color[0], color[1], color[2]);break;
+	case CUBO:
+			cubo.draw(DETERMINAR,cubo.colores, 0.0, 0.0, 0.0, 0.2,  cubo.colores_back, color[0], color[1], color[2]);
+			break;
 	case PIRAMIDE:
 			piramide.draw(DETERMINAR,piramide.colores, 0.0, 0.0, 0.0, 0.2,  piramide.colores_back, color[0], color[1], color[2]);
 			break;
   case OBJETO_PLY:
   			ply.draw(DETERMINAR,ply.colores, 0.0, 0.0, 0.0, 0.2,  ply.colores_back, color[0], color[1], color[2]);
   			break;
-  case ROTACION:        
+  case ROTACION:       
   			rotacion.draw(DETERMINAR,rotacion.colores, 0.0, 0.0, 0.0, 0.2,  rotacion.colores_back, color[0], color[1], color[2]);
   			break;
   case ARTICULADO:

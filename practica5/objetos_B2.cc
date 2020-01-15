@@ -126,7 +126,6 @@ for (i=0;i<caras.size();i++){
    
 }
 
-
 //*************************************************************************
 // dibujar el triangulo seleccionado
 //*************************************************************************
@@ -141,21 +140,39 @@ void _triangulos3D::determinar_triangulo(int p_r, int p_g, int p_b)
 		}
 	}
 	
-	if (cara!=-1){
-		if (colores[cara][0] == 1.0 && colores[cara][1] == 0.0 && colores[cara][2] == 0.0){	//si era rojo lo ponemos amarillo
-			colores[cara][0]=1.0;
-			colores[cara][1]=1.0;
-			colores[cara][2]=0.0;
-		}else if (colores[cara][0] == 1.0 && colores[cara][1] == 1.0 && colores[cara][2] == 0.0) { //si era amarillo -->rojo
-			colores[cara][0]=1.0;
-			colores[cara][1]=0.0;
-			colores[cara][2]=0.0;
+	for (int i=0; i<caras.size(); i++){	//todas las que no eran amarillas a rojo
+		if (!(colores[i][0]==1.0 && colores[i][1]==1.0 && colores[i][2]==0.0)){
+			colores[i][0]=1.0;
+			colores[i][1]=0.0;
+			colores[i][2]=0.0;
 		}
 	}
 	
-	
-	
+	if(cara!=-1){
+		if (colores[cara][0]==1.0 && colores[cara][1]==1.0 && colores[cara][2]==0.0){	//si la seleccionada era amarilla
+			//la ponemos a azul
+			colores[cara][0]=0.0;
+			colores[cara][1]=0.0;
+			colores[cara][2]=1.0;
+		}else{	//si no era amarilla
+			//la ponemos a amarillo
+			colores[cara][0]=1.0;
+			colores[cara][1]=1.0;
+			colores[cara][2]=0.0;
+		
+		}
+		
+		//todas las caras que no son amarillas las ponemos a azul (selección de objeto
+		for (int i=0; i<caras.size(); i++){	//todas las que no eran amarillas a rojo
+			if (!(colores[i][0]==1.0 && colores[i][1]==1.0 && colores[i][2]==0.0)){
+				colores[i][0]=0.0;
+				colores[i][1]=0.0;
+				colores[i][2]=1.0;
+			}
+		}
+	}
 }
+		
 
 
 

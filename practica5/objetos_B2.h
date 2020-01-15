@@ -49,8 +49,6 @@ void 	draw(_modo modo, vector<vector<float>> los_colores, float r2, float g2, fl
 vector<_vertex3i> caras;
 vector<vector<float>> colores;
 vector<vector<int>> colores_back;
-
-static vector<vector<int>> todos_los_colores;
 };
 
 
