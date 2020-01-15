@@ -142,15 +142,15 @@ void _triangulos3D::determinar_triangulo(int p_r, int p_g, int p_b)
 	}
 	
 	if (cara!=-1){
-		if (colores[cara][0] == 1.0 && colores[cara][1] == 0.0){	//si era rojo lo ponemos amarillo
+		if (colores[cara][0] == 1.0 && colores[cara][1] == 0.0 && colores[cara][2] == 0.0){	//si era rojo lo ponemos amarillo
 			colores[cara][0]=1.0;
 			colores[cara][1]=1.0;
 			colores[cara][2]=0.0;
-		}else{								//si no era rojo lo volvemos a poner a rojo
+		}else if (colores[cara][0] == 1.0 && colores[cara][1] == 1.0 && colores[cara][2] == 0.0) { //si era amarillo -->rojo
 			colores[cara][0]=1.0;
 			colores[cara][1]=0.0;
 			colores[cara][2]=0.0;
-	}
+		}
 	}
 	
 	

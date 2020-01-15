@@ -148,6 +148,23 @@ glRotatef(Observer_angle_x,1,0,0);
 glRotatef(Observer_angle_y,0,1,0);
 }
 
+void change_projection_alzado()
+{
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+glViewport(0,Alto/2, Ancho/2, Alto/2);
+glOrtho(-2,2,-2,2,-100,100);
+glScalef(factor, factor, 1.0);
+}
+
+void change_projection_planta()
+{
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+glViewport(0,Alto/2, Ancho/2, Alto/2);
+glOrtho(-2,2,-2,-100,100);
+glRotatef(90,1,0,0);
+}
 
 /*
 

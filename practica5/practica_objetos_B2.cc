@@ -55,14 +55,14 @@ int flag_giro_pantalla=0;
 
 //Práctica 5
 int estadoRaton[3], xc, yc, cambio=0;
-
+int r;
 int Ancho=450, Alto=450;
 float factor=1.0;
 
 void pick_color(int x, int y);
 
-int tipo_camara = 0;
-float r=1.0, g=0.0, b=0.0;
+int modo_camara = 2;
+
 
 
 
@@ -153,7 +153,10 @@ glLoadIdentity();
 
 // formato(x_minimo,x_maximo, y_minimo, y_maximo,plano_delantero, plano_traser)
 //  plano_delantero>0  plano_trasero>PlanoDelantero)
+
 glFrustum(-Size_x,Size_x,-Size_y,Size_y,Front_plane,Back_plane);
+
+glViewport(0,0,Ancho, Alto);
 }
 
 
@@ -163,13 +166,51 @@ glFrustum(-Size_x,Size_x,-Size_y,Size_y,Front_plane,Back_plane);
 
 void change_observer()
 {
-glViewport(0,0,Ancho,Alto);
+//glViewport(0,0,Ancho,Alto);
 // posicion del observador
 glMatrixMode(GL_MODELVIEW);
 glLoadIdentity();
 glTranslatef(0,0,-Observer_distance);
 glRotatef(Observer_angle_x,1,0,0);
 glRotatef(Observer_angle_y,0,1,0);
+}
+
+void change_projection_seleccion()
+{
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+glFrustum(-Size_x,Size_x,-Size_y,Size_y,Front_plane,Back_plane);
+glViewport(Ancho/2,0,Ancho/2, Alto/2);
+}
+
+
+void change_projection_planta()
+{
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+glOrtho(-2,2,-2,2,-100,100);
+//glRotatef(90,1,0,0);
+glScalef(factor, factor, 1.0);	 		
+glViewport(0,0, Ancho/2, Alto/2);
+}
+
+void change_projection_alzado()
+{
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+glOrtho(-2,2,-2,2,-100,100);
+glScalef(factor, factor, 1.0);			
+glViewport(0,Alto/2, Ancho/2, Alto/2);
+}
+
+
+void change_projection_perfil()
+{
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+glOrtho(-2, 2, -2, 2, -100, 100);
+glScalef(factor, factor, 1.0);
+glViewport(Ancho/2, Alto/2, Ancho/2, Alto/2);
 }
 
 //**************************************************************************
@@ -264,19 +305,14 @@ void draw_objects_seleccion()
 {
 switch (t_objeto){
 	case CUBO: 
-				//printf("numero de caras: %d", cubo.caras.size());
 				cubo.draw(SELECCION,cubo.colores, 0.0, 0.0, 0.0, 0.2,  cubo.colores_back, 1, 1, 1);break;
 	case PIRAMIDE:
-				//printf("numero de caras: %d", piramide.caras.size());
 				piramide.draw(SELECCION,piramide.colores, 0.0, 0.0, 0.0, 0.2, piramide.colores_back, 1, 1, 1);break;
         case OBJETO_PLY:
-        		//printf("numero de caras: %d", ply.caras.size());
         		ply.draw(SELECCION,ply.colores, 0.0, 0.0, 0.0, 0.2, ply.colores_back, 1, 1, 1);break;
         case ROTACION:        
-        		//printf("numero de caras: %d", rotacion.caras.size());
 	        rotacion.draw(SELECCION,rotacion.colores, 0.0, 0.0, 0.0, 0.2, rotacion.colores_back, 1, 1, 1);break;
         case ARTICULADO:
-        		//printf("numero de caras: %d", lampara.caras.size());
 	        lampara.draw(SELECCION,lampara.colores, 0.0, 0.0, 0.0, 0.2, lampara.colores_back, 1, 1, 1);break;
 	        break;
         
@@ -291,22 +327,114 @@ switch (t_objeto){
 
 void draw(void)
 {
-glDrawBuffer(GL_FRONT);	//se borra la ventana se coloca la camara...
-clean_window();
-change_observer();
-draw_axis();
-draw_objects();	//objetos articulado
+
+if (modo_camara==1){		//Perspectiva
+
+	//BUFFER FRONTAL
+	glDrawBuffer(GL_FRONT);	
+	clean_window();
+	change_projection();
+	change_observer();
+	draw_axis();
+	draw_objects();
+	
+	//BUFFER TRASERO
+	glDrawBuffer(GL_BACK);
+	clean_window();
+	change_projection();
+	change_observer();
+	draw_objects_seleccion();
+	
+	glFlush();
+	
+
+}else if (modo_camara==2){		//ortogonal
+
+	//BUFFER FRONTAL--------------------------------------------
+	glDrawBuffer(GL_FRONT);
+	clean_window();
+	change_projection_seleccion();
+	change_observer();
+	
+	draw_axis();
+	draw_objects();
 
 
-glDrawBuffer(GL_BACK);
-clean_window();
-change_observer();
-draw_objects_seleccion();	//pintamos los  objetos otra vez cada pieza con un color distinto
+	//Planta
+	change_projection_planta();
+	
+	gluLookAt(0,1,0, 0,0,0, 0,0,1);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	draw_axis();
+	draw_objects();
+	
+	
+	
+	//Alzado
+	change_projection_alzado();
+	
+	gluLookAt(0,0,1, 0,0,0, 0,1,0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	draw_axis();
+	draw_objects();
+	
+	
+	//Perfil
+	change_projection_perfil();
 
-glFlush();
+	gluLookAt(1,0,0, 0,0,0, 0,1,0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 
-}
+	draw_axis();
+	draw_objects();
+	
 
+	//BUFFER TRASERO-----------------------------------------------
+	glDrawBuffer(GL_BACK);
+	change_projection_seleccion();
+	change_observer();
+	
+	draw_objects_seleccion();
+	
+	
+	//Planta
+	change_projection_planta();
+	
+	gluLookAt(0,1,0, 0,0,0, 0,0,1);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	draw_objects_seleccion();
+	
+	
+	//Alzado
+	change_projection_alzado();
+	
+	gluLookAt(0,0,1, 0,0,0, 0,1,0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	draw_objects_seleccion();
+	
+	//Perfil
+	change_projection_perfil();
+
+	gluLookAt(1,0,0, 0,0,0, 0,1,0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	draw_objects_seleccion();
+	
+	glFlush();
+
+	}
+
+}	
 
 
 //***************************************************************************
@@ -348,6 +476,8 @@ switch (toupper(Tecla1)){
 	case '3':modo=SOLID;break;
 	case '4':modo=SOLID_CHESS;break;
 	case '5':modo=SELECCION;break;
+	case 'J':modo_camara=1;break;
+	case 'K':modo_camara=2;break;
         case 'P':t_objeto=PIRAMIDE;break;
         case 'C':t_objeto=CUBO;break;
         case 'O':t_objeto=OBJETO_PLY;break;	
@@ -424,7 +554,7 @@ glutPostRedisplay();
 
 
 void procesar_color(unsigned char color[3])
-{ 
+{
 switch (t_objeto){
 	case CUBO: cubo.draw(DETERMINAR,cubo.colores, 0.0, 0.0, 0.0, 0.2,  cubo.colores_back, color[0], color[1], color[2]);break;
 	case PIRAMIDE:
@@ -450,7 +580,6 @@ void pick_color(int x, int y)
 {
 GLint viewport[4];
 unsigned char pixel[3];
-//si quisieramos leer 100 pixel[100][3]
 glGetIntegerv(GL_VIEWPORT, viewport);	//me olvido y directamente pongo el tamaño grande x,alto
 glReadBuffer(GL_BACK);
 glReadPixels(x,viewport[3]-y,1,1,GL_RGB,GL_UNSIGNED_BYTE,(GLubyte *) &pixel[0]);	//nos lo da el punto en coord de dispositivo
@@ -483,8 +612,25 @@ if(boton== GLUT_LEFT_BUTTON) {	//controla el pick (botón izq)
       pick_color(xc, yc);
     } 
   }
+  if (boton == 3){	//scroll up envent
+		factor +=0.1;
+		//r=rueda;
+	}else if (boton == 4){	//scroll down event
+		factor -=0.1;
+		//r=rueda;
+	}
 }
 
+void ruedaRaton(int rueda, int direccion, int x, int y){
+	if (rueda>r){
+		factor +=0.1;
+		r=rueda;
+	}else{
+		factor -=0.1;
+		r=rueda;
+	}
+	
+}
 /*************************************************************************/
 
 void getCamara (GLfloat *x, GLfloat *y)
@@ -506,6 +652,20 @@ Observer_angle_y=y;
 
 void RatonMovido( int x, int y )
 {
+
+if(estadoRaton[2]==1){
+
+Observer_angle_y += x - xc;
+Observer_angle_x += y - yc;
+
+xc = x;
+yc = y;
+
+glutPostRedisplay();
+}
+
+
+/*
 float x0, y0, xn, yn; 
 if(estadoRaton[2]==1) 
     {getCamara(&x0,&y0);	//valores de giro que tiene la camara
@@ -516,6 +676,8 @@ if(estadoRaton[2]==1)
      yc=y;
      glutPostRedisplay();
     }
+    
+*/
 }
 
 
